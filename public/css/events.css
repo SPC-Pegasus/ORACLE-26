@@ -30,7 +30,7 @@
 }
 
 .events-stage::-webkit-scrollbar-thumb:hover {
-  background: rgba(30, 58, 138, 0.8);
+  background: var(--theme-primary);
 }
 
 .events-header {

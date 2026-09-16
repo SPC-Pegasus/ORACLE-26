@@ -59,11 +59,11 @@
 }
 
 .teams-wrapper:not(.full-page-active) .team-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(0, 240, 255, 0.5);
+  transform: translateY(-8px);
+  border-color: var(--theme-primary);
   box-shadow: 
     inset 0 1px 2px rgba(255, 255, 255, 0.3),
-    0 20px 45px rgba(0, 240, 255, 0.15);
+    0 20px 45px var(--theme-glow);
 }
 
 .teams-wrapper.full-page-active .team-card:not(.expanded) {
@@ -107,7 +107,7 @@
 .team-card-header::after {
   content: "+";
   font-family: var(--font-mono);
-  color: #00f0ff;
+  color: var(--theme-primary);
   font-size: 2rem;
   transition: transform 0.3s ease;
 }
@@ -164,9 +164,9 @@
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: #00f0ff;
+  background: var(--theme-primary);
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+  box-shadow: 0 0 10px var(--theme-glow);
 }
 
 @media (max-width: 768px) {

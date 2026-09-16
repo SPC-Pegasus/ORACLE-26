@@ -14,8 +14,9 @@
 :root {
   --bg-primary: #07080a;
   --bg-spotlight: #161a24;
-  --blue-neon: #1e3a8a;
-  --blue-glow: rgba(30, 58, 138, 0.45);
+  --theme-primary: #2563eb;
+  --theme-primary-dark: #1d4ed8;
+  --theme-glow: rgba(37, 99, 235, 0.45);
   --text-white: #ffffff;
   --text-muted: #8c96a8;
   --card-bg: rgba(20, 24, 34, 0.75);
@@ -114,7 +115,7 @@ html, body {
 .logo-symbol {
   font-family: var(--font-hero);
   font-weight: 900;
-  color: var(--blue-neon);
+  color: var(--theme-primary);
   font-size: 1.1rem;
   letter-spacing: -1px;
 }
@@ -311,8 +312,8 @@ html, body {
   font-family: var(--font-script);
   font-size: clamp(3.2rem, 7.8vw, 7.8rem);
   font-weight: 700;
-  color: var(--blue-neon);
-  text-shadow: 0 0 25px var(--blue-glow), 0 0 50px var(--blue-glow);
+  color: var(--theme-primary);
+  text-shadow: 0 0 25px var(--theme-glow), 0 0 50px var(--theme-glow);
   line-height: 1;
   letter-spacing: 0.02em;
   display: inline-block;
@@ -430,7 +431,7 @@ html, body {
 }
 
 .card-action-link:hover {
-  color: #00f0ff;
+  color: var(--theme-primary);
   gap: 0.85rem;
 }
 
@@ -663,7 +664,7 @@ html, body {
   .script-word {
     font-size: clamp(2rem, 9.5vw, 2.8rem);
     line-height: 1;
-    text-shadow: 0 0 20px var(--blue-glow);
+    text-shadow: 0 0 20px var(--theme-glow);
   }
 
   .script-subline {
@@ -724,8 +725,8 @@ html, body {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--blue-neon);
-    box-shadow: 0 0 10px var(--blue-glow);
+    background: var(--theme-primary);
+    box-shadow: 0 0 10px var(--theme-glow);
     animation: pulseDot 2s infinite ease-in-out;
   }
 
@@ -742,7 +743,7 @@ html, body {
   .card-action-link {
     font-size: 0.78rem;
     font-weight: 600;
-    color: var(--blue-neon);
+    color: var(--theme-primary);
   }
 
 }
