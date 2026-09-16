@@ -10,6 +10,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Format score helper
   const formatScore = (score) => `${score} PTS`;
 
+  const BASE_TEAMS = [
+    "Team Exiles",
+    "Team Mercenaries",
+    "Team Nexus",
+    "Team Nomads",
+    "Team Quantum",
+    "Team Nulls",
+    "Team Shadows",
+    "Team Void"
+  ];
+
   async function fetchLiveScores() {
     try {
       const response = await fetch(API_URL);
@@ -19,11 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const result = await response.json();
       
-      // The API returns { data: [ { teamName: '...', totalPoints: ... }, ... ] }
-      
-      let teams = result.data.map(team => ({
-          name: team.teamName,
-          score: team.totalPoints || 0
+      // Map API data to an object for easy lookup
+      const apiScores = {};
+      result.data.forEach(team => {
+          apiScores[team.teamName] = team.totalPoints || 0;
+      });
+
+      // Initialize all baseline teams
+      let teams = BASE_TEAMS.map(teamName => ({
+          name: teamName,
+          score: apiScores[teamName] || 0
       }));
       
       // Sort teams descending by score to be safe

@@ -85,18 +85,18 @@
           <select id="downloadEventSelect" class="form-control" required>
             <option value="" disabled selected>Choose an event...</option>
             <option value="Overall Rankings" style="font-weight: bold; color: var(--primary-color);">Overall Rankings</option>
-            <option value="Cyber Hackathon">Cyber Hackathon</option>
-            <option value="Neural UI/UX">Neural UI/UX</option>
-            <option value="AI Odyssey">AI Odyssey</option>
-            <option value="Data Heist">Data Heist</option>
-            <option value="Robo Wars">Robo Wars</option>
             <option value="Deadshot">Deadshot</option>
             <option value="Treasure Hunt">Treasure Hunt</option>
-            <option value="Sim-Racing Circuit">Sim-Racing Circuit</option>
-            <option value="Cyber Cosplay">Cyber Cosplay</option>
+            <option value="Free Fire">Free Fire</option>
+            <option value="BGMI">BGMI</option>
+            <option value="IT Manager">IT Manager</option>
+            <option value="IT Quiz">IT Quiz</option>
+            <option value="Web AI">Web AI</option>
+            <option value="Poster Making">Poster Making</option>
+            <option value="Group Dance">Group Dance</option>
+            <option value="Group Singing">Group Singing</option>
             <option value="Fashion Show">Fashion Show</option>
-            <option value="Synth-Beat Battle">Synth-Beat Battle</option>
-            <option value="Neon Art Exhibit">Neon Art Exhibit</option>
+            <option value="Cosplay">Cosplay</option>
           </select>
         </div>
         
@@ -165,24 +165,24 @@
           let tableRows = [];
 
           if (selectedEvent === 'Overall Rankings') {
-            tableColumn = ["Rank", "Team Name", "Cyber", "UI/UX", "AI", "Heist", "Robo", "Deadshot", "Hunt", "Sim", "Cosplay", "Fashion", "Synth", "Neon", "TOTAL"];
+            tableColumn = ["Rank", "Team Name", "Deadshot", "Hunt", "FFire", "BGMI", "Manager", "Quiz", "Web AI", "Poster", "Dance", "Singing", "Fashion", "Cosplay", "TOTAL"];
             
             teams.forEach((team, index) => {
               const teamData = [
                 index + 1,
                 team.teamName,
-                team.scores['Cyber Hackathon'] || 0,
-                team.scores['Neural UI/UX'] || 0,
-                team.scores['AI Odyssey'] || 0,
-                team.scores['Data Heist'] || 0,
-                team.scores['Robo Wars'] || 0,
                 team.scores['Deadshot'] || 0,
                 team.scores['Treasure Hunt'] || 0,
-                team.scores['Sim-Racing Circuit'] || 0,
-                team.scores['Cyber Cosplay'] || 0,
+                team.scores['Free Fire'] || 0,
+                team.scores['BGMI'] || 0,
+                team.scores['IT Manager'] || 0,
+                team.scores['IT Quiz'] || 0,
+                team.scores['Web AI'] || 0,
+                team.scores['Poster Making'] || 0,
+                team.scores['Group Dance'] || 0,
+                team.scores['Group Singing'] || 0,
                 team.scores['Fashion Show'] || 0,
-                team.scores['Synth-Beat Battle'] || 0,
-                team.scores['Neon Art Exhibit'] || 0,
+                team.scores['Cosplay'] || 0,
                 team.totalPoints
               ];
               tableRows.push(teamData);
