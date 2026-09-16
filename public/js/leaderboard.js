@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Update this URL if your Next.js/Express backend is hosted on a different domain
   // (e.g., 'https://your-backend.vercel.app/api/live-scores')
-  const API_URL = '/api/live-scores'; 
+  const API_URL = '/api/scores'; 
   
   // DOM Elements
   const podiumContainer = document.querySelector('.podium-container');
@@ -19,17 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const result = await response.json();
       
-      // The API returns { data: [["Team A", "100"], ["Team B", "80"], ...] }
-      // Assuming row[0] is Team Name and row[1] is Score. Adjust if needed.
-      // We skip the first row if it's headers. Let's assume the data is just the teams.
+      // The API returns { data: [ { teamName: '...', totalPoints: ... }, ... ] }
       
-      let teams = result.data
-        .map(row => ({
-          name: row[0],
-          score: parseInt(row[1] || 0, 10)
-        }))
-        // Filter out headers or empty rows if necessary
-        .filter(team => !isNaN(team.score) && team.name && team.name.toLowerCase() !== 'team name');
+      let teams = result.data.map(team => ({
+          name: team.teamName,
+          score: team.totalPoints || 0
+      }));
       
       // Sort teams descending by score to be safe
       teams.sort((a, b) => b.score - a.score);
