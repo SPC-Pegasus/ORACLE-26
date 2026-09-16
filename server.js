@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const Team = require('./models/Team');
+const Registration = require('./models/Registration');
 
 const app = express();
 app.use(cors());
@@ -54,6 +55,38 @@ app.post('/api/scores', async (req, res) => {
   } catch (error) {
     console.error('Error updating score:', error);
     res.status(500).json({ error: 'Failed to update score' });
+  }
+});
+
+// POST /api/registrations Endpoint
+app.post('/api/registrations', async (req, res) => {
+  const { teamName, eventName, participants } = req.body;
+  
+  if (!teamName || !eventName || !participants) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    const newReg = new Registration({ teamName, eventName, participants });
+    await newReg.save();
+    res.status(201).json({ message: 'Registration successful', data: newReg });
+  } catch (error) {
+    console.error('Error saving registration:', error);
+    res.status(500).json({ error: 'Failed to register' });
+  }
+});
+
+// GET /api/registrations Endpoint
+app.get('/api/registrations', async (req, res) => {
+  const { eventName } = req.query;
+  
+  try {
+    const filter = eventName ? { eventName } : {};
+    const registrations = await Registration.find(filter).sort({ createdAt: -1 });
+    res.status(200).json({ data: registrations });
+  } catch (error) {
+    console.error('Error fetching registrations:', error);
+    res.status(500).json({ error: 'Failed to fetch registrations' });
   }
 });
 
