@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle — Events</title>
+  <meta name="description"
+    content="Protocol 3000 Events Archive. Explore our cybernetic operations and neural integration trials.">
+
+  <!-- Google Fonts: Caveat, Inter, Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Teko:wght@700&display=swap"
+    rel="stylesheet">
+
+  <!-- Core Stylesheet with Neue Machina Ultrabold font-face -->
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/events.css">
+</head>
+
+<body>
+  <svg width="0" height="0" style="position: absolute;">
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+    </filter>
+  </svg>
+
+  <!-- Click Spark Canvas (React Bits Port) -->
+  <canvas id="clickSparkCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
+
+  <div class="page-container">
+
+    <!-- Top Navigation -->
+    <header class="top-nav-bar">
+      <div class="brand-logo">
+        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE</span></a>
+      </div>
+
+      <div class="gooey-nav-container" id="gooeyNav">
+        <nav class="nav-menu">
+          <ul>
+            <li class="active"><a href="events.html" class="nav-item">Events</a></li>
+            <li><a href="teams.html" class="nav-item">Team</a></li>
+            <li><a href="registration.html" class="nav-item">Registration</a></li>
+            <li><a href="leaderboard.html" class="nav-item">Leaderboard</a></li>
+          </ul>
+        </nav>
+        <span class="effect filter"></span>
+        <span class="effect text"></span>
+      </div>
+
+      <div class="header-action">
+        <a href="admin.html" style="text-decoration: none;"><button class="pill-btn primary" title="Admin Access">Admin</button></a>
+      </div>
+    </header>
+
+    <!-- Events Stage -->
+    <main class="events-stage document-layout">
+      
+      <div class="events-header">
+        <h2 class="events-title">ARCHIVED DIRECTIVES</h2>
+        <p class="events-subtitle">Select a protocol for neural integration. Survival is not guaranteed, but glory is eternal.</p>
+      </div>
+
+      <div class="document-wrapper">
+
+        <!-- TECHNICAL SECTION -->
+        <section class="doc-section" id="technical">
+          <h2 class="section-title">TECHNICAL DIRECTIVES</h2>
+          
+          <article class="doc-event">
+            <h3 class="doc-event-title">CYBER HACKATHON</h3>
+            <div class="doc-event-meta">[FORMAT: SQUAD] | [CATEGORY: CODE]</div>
+            <p class="doc-event-desc">Jack into the mainframe and override the city's grid. A grueling 24-hour sprint where elite netrunners battle ICE and each other to craft the ultimate exploit.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">NEURAL UI/UX</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO] | [CATEGORY: DESIGN]</div>
+            <p class="doc-event-desc">Architect the digital dreams of tomorrow. Design intuitive cyber-interfaces that seamlessly bridge the gap between human consciousness and corporate software.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">AI ODYSSEY</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO] | [CATEGORY: ALGORITHM]</div>
+            <p class="doc-event-desc">Navigate the emergent labyrinth of artificial sentience. Train models, solve algorithmic paradoxes, and align rogue networks before they subsume the sector.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">DATA HEIST</h3>
+            <div class="doc-event-meta">[FORMAT: SQUAD] | [CATEGORY: SECURITY]</div>
+            <p class="doc-event-desc">Infiltrate highly-secured corporate databases in this capture-the-flag style cybersecurity challenge. Stealth, precision, and raw processing power are your only weapons.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+        </section>
+
+        <!-- GAMING SECTION -->
+        <section class="doc-section" id="gaming">
+          <h2 class="section-title">GAMING DIRECTIVES</h2>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">ROBO WARS</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO / SQUAD] | [CATEGORY: COMBAT]</div>
+            <p class="doc-event-desc">Flesh fails. Steel remains. Bring your custom combat chassis to the arena and reduce your competitors to scrap metal in a relentless mechanical deathmatch.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">DEADSHOT</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO / SQUAD] | [CATEGORY: FPS]</div>
+            <p class="doc-event-desc">Competitive tactical shooter tournament held in the department computer lab.</p>
+            <div class="doc-event-rules-title">RULES &amp; REGULATIONS:</div>
+            <ul class="doc-event-rules">
+              <li>Format: TBD by events team.</li>
+              <li>Max 30 systems available.</li>
+              <li>No personal peripherals or external installs.</li>
+              <li>Zero tolerance for hacks, mods, or 3rd-party software.</li>
+              <li>Abusive behaviour or equipment damage = disqualification.</li>
+            </ul>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">TREASURE HUNT</h3>
+            <div class="doc-event-meta">[FORMAT: SQUAD (5-7)] | [CATEGORY: IRL EVENT]</div>
+            <p class="doc-event-desc">Follow the digital breadcrumbs and encrypted clues scattered across the college premises.</p>
+            <div class="doc-event-rules-title">RULES &amp; REGULATIONS:</div>
+            <ul class="doc-event-rules">
+              <li>Team size: 5-7 members.</li>
+              <li>Follow clues in sequence; skipping leads to disqualification.</li>
+              <li>Stay within designated college areas.</li>
+              <li>No damage to property or interference with others.</li>
+              <li>Abusive/unsporting behaviour = disqualification.</li>
+              <li>Winner: Fastest completion / most checkpoints cleared.</li>
+            </ul>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">SIM-RACING CIRCUIT</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO] | [CATEGORY: SIMULATION]</div>
+            <p class="doc-event-desc">High-octane cyber-racing in hyper-realistic immersive rigs. Push the physics engine to its limits and drift through the neon-soaked streets of the metropolis.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+        </section>
+
+        <!-- CULTURAL SECTION -->
+        <section class="doc-section" id="cultural">
+          <h2 class="section-title">CULTURAL DIRECTIVES</h2>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">CYBER COSPLAY</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO] | [CATEGORY: SHOWCASE]</div>
+            <p class="doc-event-desc">Transcend your physical form. Don your mecha suits, neon visors, and synth-rebel attire to embody the icons of the neo-tokyo underground.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">FASHION SHOW</h3>
+            <div class="doc-event-meta">[FORMAT: SQUAD] | [CATEGORY: SHOWCASE]</div>
+            <p class="doc-event-desc">Strut the dystopian runway. Showcase corporate elite streetwear, LED-laced fabrics, and the bleeding edge of haute cyberpunk aesthetics.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">SYNTH-BEAT BATTLE</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO] | [CATEGORY: MUSIC]</div>
+            <p class="doc-event-desc">Electronic musicians and rogue DJs clash in a high-energy live mix-off. Drop the bass, sequence the synths, and command the crowd's neural rhythms.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+
+          <article class="doc-event">
+            <h3 class="doc-event-title">NEON ART EXHIBIT</h3>
+            <div class="doc-event-meta">[FORMAT: SOLO / SQUAD] | [CATEGORY: EXHIBITION]</div>
+            <p class="doc-event-desc">A mesmerizing showcase of futuristic digital art, interactive holograms, and augmented reality installations designed to warp your perception.</p>
+            <a href="registration.html" class="doc-link">&gt; INIT REGISTRATION</a>
+          </article>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -430,7 +430,7 @@ html, body {
 }
 
 .card-action-link:hover {
-  color: var(--blue-neon);
+  color: #00f0ff;
   gap: 0.85rem;
 }
 

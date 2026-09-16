@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle — Leaderboard</title>
+  <meta name="description"
+    content="Live Leaderboard and Scoring for Protocol 3000 events.">
+
+  <!-- Google Fonts: Caveat, Inter, Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Teko:wght@700&display=swap"
+    rel="stylesheet">
+
+  <!-- Core Stylesheet with Neue Machina Ultrabold font-face -->
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/leaderboard.css">
+</head>
+
+<body>
+  <div class="page-container">
+
+    <!-- Top Navigation -->
+    <header class="top-nav-bar">
+      <div class="brand-logo">
+        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE</span></a>
+      </div>
+
+      <div class="gooey-nav-container" id="gooeyNav">
+        <nav class="nav-menu">
+          <ul>
+            <li><a href="events.html" class="nav-item">Events</a></li>
+            <li><a href="teams.html" class="nav-item">Team</a></li>
+            <li><a href="registration.html" class="nav-item">Registration</a></li>
+            <li class="active"><a href="leaderboard.html" class="nav-item">Leaderboard</a></li>
+          </ul>
+        </nav>
+        <span class="effect filter"></span>
+        <span class="effect text"></span>
+      </div>
+
+      <div class="header-action">
+        <a href="admin.html"><button class="pill-btn primary" title="Admin Access">Admin</button></a>
+      </div>
+    </header>
+
+    <!-- Leaderboard Stage -->
+    <main class="leaderboard-stage">
+      
+      <div class="leaderboard-wrapper">
+
+        <div class="podium-container">
+          <!-- Second Place -->
+          <div class="podium-item place-2">
+            <div class="podium-name">Quantum Rogues</div>
+            <div class="podium-score">3200 PTS</div>
+            <div class="podium-block">2</div>
+          </div>
+          
+          <!-- First Place -->
+          <div class="podium-item place-1">
+            <div class="trophy">🏆</div>
+            <div class="podium-name">Neon Knights</div>
+            <div class="podium-score">3450 PTS</div>
+            <div class="podium-block">1</div>
+          </div>
+          
+          <!-- Third Place -->
+          <div class="podium-item place-3">
+            <div class="podium-name">Cyber Syndicate</div>
+            <div class="podium-score">2850 PTS</div>
+            <div class="podium-block">3</div>
+          </div>
+        </div>
+
+        <div class="list-container">
+          <!-- Rank 4 -->
+          <div class="list-item">
+            <div class="list-rank">04</div>
+            <div class="list-name">Glitch Protocol</div>
+            <div class="list-score">2400 PTS</div>
+          </div>
+
+          <!-- Rank 5 -->
+          <div class="list-item">
+            <div class="list-rank">05</div>
+            <div class="list-name">Null Pointers</div>
+            <div class="list-score">1950 PTS</div>
+          </div>
+
+          <!-- Rank 6 -->
+          <div class="list-item">
+            <div class="list-rank">06</div>
+            <div class="list-name">Steel Shadows</div>
+            <div class="list-score">1700 PTS</div>
+          </div>
+
+          <!-- Rank 7 -->
+          <div class="list-item">
+            <div class="list-rank">07</div>
+            <div class="list-name">Rogue Process</div>
+            <div class="list-score">1250 PTS</div>
+          </div>
+
+          <!-- Rank 8 -->
+          <div class="list-item">
+            <div class="list-rank">08</div>
+            <div class="list-name">Binary Phantoms</div>
+            <div class="list-score">900 PTS</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/leaderboard.js"></script>
+</body>
+
+</html>

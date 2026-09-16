@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle — Enter Data</title>
+  <meta name="description" content="Data Entry for Protocol 3000.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Teko:wght@700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/admin.css">
+  
+  <style>
+    .data-table-container {
+      margin-top: 4rem;
+      width: 100%;
+      overflow-x: auto;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: white;
+      font-family: 'Space Mono', monospace;
+    }
+    .data-table th, .data-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .data-table th {
+      color: var(--primary-color, #00ffcc);
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+    .data-table tbody tr:hover {
+      background: rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Click Spark Canvas -->
+  <canvas id="clickSparkCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
+
+  <div class="page-container">
+    <header class="top-nav-bar">
+      <div class="brand-logo">
+        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE ADMIN</span></a>
+      </div>
+      <div class="header-action">
+        <a href="dashboard.html" style="text-decoration: none;"><button class="pill-btn secondary" title="Back to Dashboard">Dashboard</button></a>
+      </div>
+    </header>
+
+    <main class="dashboard-stage">
+      <div class="dashboard-wrapper" style="max-width: 800px; margin: 0 auto; padding-top: 2rem;">
+        
+        <div class="dashboard-module action-card" style="text-align: left;">
+          <h2 class="module-title" style="border-bottom: none; margin-bottom: 0.5rem; font-size: 2.2rem;">ENTER DATA</h2>
+          <p class="admin-desc" style="margin-bottom: 2rem;">Select an event, team name, and score to update the database.</p>
+          
+          <form id="enterDataForm">
+            <div class="form-group">
+              <label for="eventSelect">Select Event</label>
+              <select id="eventSelect" class="form-control" required>
+                <option value="Cyber Hackathon" selected>Cyber Hackathon</option>
+                <option value="Neural UI/UX">Neural UI/UX</option>
+                <option value="AI Odyssey">AI Odyssey</option>
+                <option value="Data Heist">Data Heist</option>
+                <option value="Robo Wars">Robo Wars</option>
+                <option value="Deadshot">Deadshot</option>
+                <option value="Treasure Hunt">Treasure Hunt</option>
+                <option value="Sim-Racing Circuit">Sim-Racing Circuit</option>
+                <option value="Cyber Cosplay">Cyber Cosplay</option>
+                <option value="Fashion Show">Fashion Show</option>
+                <option value="Synth-Beat Battle">Synth-Beat Battle</option>
+                <option value="Neon Art Exhibit">Neon Art Exhibit</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="teamNameSelect">Team Name</label>
+              <select id="teamNameSelect" class="form-control" required>
+                <option value="" disabled selected>Choose a team...</option>
+                <option value="Neon Knights">Neon Knights</option>
+                <option value="Quantum Rogues">Quantum Rogues</option>
+                <option value="Cyber Syndicate">Cyber Syndicate</option>
+                <option value="Glitch Protocol">Glitch Protocol</option>
+                <option value="Null Pointers">Null Pointers</option>
+                <option value="Steel Shadows">Steel Shadows</option>
+                <option value="Rogue Process">Rogue Process</option>
+                <option value="Binary Phantoms">Binary Phantoms</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="scoreMarks">Marks / Score</label>
+              <input type="number" id="scoreMarks" class="form-control" placeholder="Enter Score" required>
+            </div>
+            
+            <button type="submit" class="btn-power-smash full-width" style="margin-top: 1rem;">
+              <div class="btn-power-smash-overlay1"></div>
+              <div class="btn-power-smash-content">
+                SUBMIT SCORE
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <!-- Table View -->
+        <div class="data-table-container">
+          <h3 style="color: white; font-family: 'Teko', sans-serif; font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 1rem;">
+            Current Standings: <span id="currentEventDisplay" style="color: #00ffcc;">Dead Shot</span>
+          </h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Team Name</th>
+                <th>Event Score</th>
+                <th>Total Points</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const enterDataForm = document.getElementById('enterDataForm');
+      const eventSelect = document.getElementById('eventSelect');
+      const teamNameSelect = document.getElementById('teamNameSelect');
+      
+      const currentEventDisplay = document.getElementById('currentEventDisplay');
+      const tableBody = document.getElementById('tableBody');
+      const API_URL = 'http://localhost:5000/api/scores';
+
+      // Load table data for the selected event
+      async function loadTableData() {
+        const selectedEvent = eventSelect.value;
+        currentEventDisplay.textContent = selectedEvent;
+        tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
+        
+        try {
+          const response = await fetch(API_URL);
+          if (!response.ok) throw new Error('Failed to fetch from backend');
+          
+          const result = await response.json();
+          let teams = result.data;
+          
+          // Sort teams by this specific event's score descending
+          teams.sort((a, b) => {
+            const scoreA = a.scores[selectedEvent] || 0;
+            const scoreB = b.scores[selectedEvent] || 0;
+            return scoreB - scoreA;
+          });
+
+          tableBody.innerHTML = '';
+          
+          if (teams.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No data found</td></tr>';
+            return;
+          }
+
+          teams.forEach((team, index) => {
+            const eventScore = team.scores[selectedEvent] || 0;
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${team.teamName}</td>
+              <td style="color: #00ffcc;">${eventScore}</td>
+              <td>${team.totalPoints}</td>
+            `;
+            tableBody.appendChild(tr);
+          });
+        } catch (error) {
+          console.error(error);
+          tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #ff3366;">Error loading data. Is the backend running?</td></tr>';
+        }
+      }
+
+      // Reload table when a new event is selected from the dropdown
+      eventSelect.addEventListener('change', loadTableData);
+
+      // Handle Form Submission
+      enterDataForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = enterDataForm.querySelector('button[type="submit"] .btn-power-smash-content');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = 'SAVING...';
+        
+        const teamName = teamNameSelect.value.trim();
+
+        if (!teamName) {
+          alert("Please select a team name.");
+          submitBtn.innerText = originalText;
+          return;
+        }
+
+        const eventName = eventSelect.value;
+        const score = document.getElementById('scoreMarks').value;
+
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ teamName, eventName, score })
+          });
+
+          if (!response.ok) throw new Error('Failed to save data');
+          
+          // Clear inputs but keep event selected
+          teamNameSelect.value = '';
+          document.getElementById('scoreMarks').value = '';
+          
+          submitBtn.innerText = 'SAVED SUCCESSFULLY!';
+          
+          // Refresh the table
+          loadTableData();
+          
+        } catch (error) {
+          console.error(error);
+          alert('Error saving data. Make sure the backend is running!');
+        } finally {
+          setTimeout(() => {
+            if (submitBtn.innerText === 'SAVED SUCCESSFULLY!') {
+              submitBtn.innerText = originalText;
+            }
+          }, 2000);
+        }
+      });
+
+      // Initial load
+      loadTableData();
+    });
+  </script>
+</body>
+</html>

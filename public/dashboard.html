@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle — Admin Dashboard</title>
+  <meta name="description"
+    content="Admin Dashboard for Protocol 3000.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Teko:wght@700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+  <svg width="0" height="0" style="position: absolute;">
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+    </filter>
+  </svg>
+
+  <canvas id="clickSparkCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
+
+  <div class="page-container">
+
+    <!-- Top Navigation -->
+    <header class="top-nav-bar">
+      <div class="brand-logo">
+        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE ADMIN</span></a>
+      </div>
+
+      <div class="header-action">
+        <a href="index.html" style="text-decoration: none;"><button class="pill-btn secondary" title="Log Out">Log Out</button></a>
+      </div>
+    </header>
+
+    <!-- Dashboard Stage -->
+    <main class="dashboard-stage">
+      <div class="dashboard-wrapper">
+        <div class="dashboard-header" style="text-align: center;">
+          <h1 class="dashboard-title">SYSTEM DASHBOARD</h1>
+          <p class="admin-desc" style="margin-bottom: 0;">Select an operation to proceed.</p>
+        </div>
+
+        <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); max-width: 800px; margin: 0 auto; margin-top: 4rem;">
+          
+          <!-- Enter Data Button -->
+          <div class="dashboard-module action-card" style="text-align: center;" onclick="window.location.href='enter-data.html'">
+            <h2 class="module-title" style="border-bottom: none; margin-bottom: 0.5rem; font-size: 2.2rem;">ENTER DATA</h2>
+            <p class="admin-desc" style="margin-bottom: 0;">Add or update team scores directly in the Oracle database.</p>
+          </div>
+
+          <!-- Download Button -->
+          <div class="dashboard-module action-card" style="text-align: center;" onclick="openDownloadModal()">
+            <h2 class="module-title" style="border-bottom: none; margin-bottom: 0.5rem; font-size: 2.2rem;">DOWNLOAD SCORES</h2>
+            <p class="admin-desc" style="margin-bottom: 0;">Export official score sheets and rankings for completed events.</p>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+
+
+  <!-- Modal for Download Scores -->
+  <div id="downloadModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <h2 class="module-title">Download Event Scores</h2>
+      <p class="admin-desc" style="text-align: left; margin-bottom: 1.5rem;">Select the event to generate and download its current score sheet.</p>
+      
+      <form id="downloadForm">
+        <div class="form-group">
+          <label for="downloadEventSelect">Select Event</label>
+          <select id="downloadEventSelect" class="form-control" required>
+            <option value="" disabled selected>Choose an event...</option>
+            <option value="Overall Rankings" style="font-weight: bold; color: var(--primary-color);">Overall Rankings</option>
+            <option value="Cyber Hackathon">Cyber Hackathon</option>
+            <option value="Neural UI/UX">Neural UI/UX</option>
+            <option value="AI Odyssey">AI Odyssey</option>
+            <option value="Data Heist">Data Heist</option>
+            <option value="Robo Wars">Robo Wars</option>
+            <option value="Deadshot">Deadshot</option>
+            <option value="Treasure Hunt">Treasure Hunt</option>
+            <option value="Sim-Racing Circuit">Sim-Racing Circuit</option>
+            <option value="Cyber Cosplay">Cyber Cosplay</option>
+            <option value="Fashion Show">Fashion Show</option>
+            <option value="Synth-Beat Battle">Synth-Beat Battle</option>
+            <option value="Neon Art Exhibit">Neon Art Exhibit</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn-power-smash secondary full-width">
+          <div class="btn-power-smash-overlay1"></div>
+          <div class="btn-power-smash-content">
+            DOWNLOAD SCORE SHEET
+          </div>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const downloadModal = document.getElementById('downloadModal');
+
+    function openDownloadModal() {
+      downloadModal.classList.add('active');
+    }
+
+    function closeModals() {
+      downloadModal.classList.remove('active');
+    }
+
+    // Close on click outside
+    window.onclick = function(event) {
+      if (event.target == downloadModal) {
+        downloadModal.classList.remove('active');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const downloadForm = document.getElementById('downloadForm');
+      downloadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = downloadForm.querySelector('button[type="submit"] .btn-power-smash-content');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = 'GENERATING PDF...';
+
+        try {
+          const response = await fetch('http://localhost:5000/api/scores');
+          if (!response.ok) throw new Error('Failed to fetch from backend');
+          
+          const result = await response.json();
+          const teams = result.data;
+          const selectedEvent = document.getElementById('downloadEventSelect').value;
+
+          const { jsPDF } = window.jspdf;
+          
+          // Determine if we need landscape mode for Overall Rankings
+          const orientation = selectedEvent === 'Overall Rankings' ? 'landscape' : 'portrait';
+          const doc = new jsPDF({ orientation });
+          
+          doc.setFontSize(18);
+          doc.text(`Official Score Report: ${selectedEvent}`, 14, 22);
+          doc.setFontSize(11);
+          doc.setTextColor(100);
+          doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+
+          let tableColumn;
+          let tableRows = [];
+
+          if (selectedEvent === 'Overall Rankings') {
+            tableColumn = ["Rank", "Team Name", "Cyber", "UI/UX", "AI", "Heist", "Robo", "Deadshot", "Hunt", "Sim", "Cosplay", "Fashion", "Synth", "Neon", "TOTAL"];
+            
+            teams.forEach((team, index) => {
+              const teamData = [
+                index + 1,
+                team.teamName,
+                team.scores['Cyber Hackathon'] || 0,
+                team.scores['Neural UI/UX'] || 0,
+                team.scores['AI Odyssey'] || 0,
+                team.scores['Data Heist'] || 0,
+                team.scores['Robo Wars'] || 0,
+                team.scores['Deadshot'] || 0,
+                team.scores['Treasure Hunt'] || 0,
+                team.scores['Sim-Racing Circuit'] || 0,
+                team.scores['Cyber Cosplay'] || 0,
+                team.scores['Fashion Show'] || 0,
+                team.scores['Synth-Beat Battle'] || 0,
+                team.scores['Neon Art Exhibit'] || 0,
+                team.totalPoints
+              ];
+              tableRows.push(teamData);
+            });
+          } else {
+            tableColumn = ["Rank", "Team Name", `${selectedEvent} Score`, "Total Points"];
+            
+            teams.forEach((team, index) => {
+              const eventScore = team.scores[selectedEvent] || 0;
+              const teamData = [
+                index + 1,
+                team.teamName,
+                eventScore,
+                team.totalPoints
+              ];
+              tableRows.push(teamData);
+            });
+          }
+
+          doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 40,
+            theme: 'grid',
+            styles: { fontSize: 10, cellPadding: 4 },
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 }
+          });
+
+          const filename = `${selectedEvent.replace(/\\s+/g, '_').toLowerCase()}_report.pdf`;
+          doc.save(filename);
+          
+        } catch (error) {
+          console.error('Error generating PDF:', error);
+          alert('Failed to generate PDF. Make sure your MongoDB backend is running!');
+        } finally {
+          submitBtn.innerText = originalText;
+          closeModals();
+        }
+      });
+
+    });
+  </script>
+</body>
+
+</html>

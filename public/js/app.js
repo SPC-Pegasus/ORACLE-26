@@ -313,4 +313,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initGooeyNav();
+
 });

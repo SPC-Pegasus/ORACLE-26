@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle — Admin Authorization</title>
+  <meta name="description"
+    content="Admin Authorization Gateway for Protocol 3000.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Teko:wght@700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+  <svg width="0" height="0" style="position: absolute;">
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+    </filter>
+  </svg>
+
+  <!-- Click Spark Canvas -->
+  <canvas id="clickSparkCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
+
+  <div class="page-container">
+
+    <!-- Top Navigation -->
+    <header class="top-nav-bar">
+      <div class="brand-logo">
+        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE</span></a>
+      </div>
+
+      <div class="gooey-nav-container" id="gooeyNav">
+        <nav class="nav-menu">
+          <ul>
+            <li><a href="events.html" class="nav-item">Events</a></li>
+            <li><a href="teams.html" class="nav-item">Team</a></li>
+            <li><a href="registration.html" class="nav-item">Registration</a></li>
+            <li><a href="leaderboard.html" class="nav-item">Leaderboard</a></li>
+          </ul>
+        </nav>
+        <span class="effect filter"></span>
+        <span class="effect text"></span>
+      </div>
+
+      <div class="header-action">
+        <a href="index.html" style="text-decoration: none;"><button class="pill-btn primary" title="Return to Terminal">Return</button></a>
+      </div>
+    </header>
+
+    <!-- Login Stage -->
+    <main class="admin-stage">
+      <div class="admin-card">
+        <h1 class="admin-title">SYSTEM OVERRIDE</h1>
+        <p class="admin-desc">Provide authorization credentials to access the Oracle core database.</p>
+        
+        <form id="adminLoginForm">
+          <div class="form-group">
+            <label for="adminId">Administrator ID</label>
+            <input type="text" id="adminId" class="form-control" placeholder="Enter Admin ID" required>
+          </div>
+
+          <div class="form-group">
+            <label for="adminPass">Passcode</label>
+            <input type="password" id="adminPass" class="form-control" placeholder="Enter secure passcode" required>
+          </div>
+
+          <button type="submit" class="btn-power-smash full-width">
+            <div class="btn-power-smash-overlay1"></div>
+            <div class="btn-power-smash-overlay2"></div>
+            <div class="btn-power-smash-content">
+              <svg class="btn-power-smash-icon" xmlns="http://www.000webhost.com" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              AUTHORIZE
+            </div>
+          </button>
+        </form>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Fake login logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginForm = document.getElementById('adminLoginForm');
+      if(loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          // Provide some visual feedback
+          const btn = loginForm.querySelector('button');
+          btn.innerHTML = 'VERIFYING...';
+          
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 600);
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
