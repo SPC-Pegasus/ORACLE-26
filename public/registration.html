@@ -65,7 +65,7 @@
           The future belongs to the synchronized. Register now for early access to Protocol 3000 integration.
         </p>
 
-        <form>
+        <form id="registrationForm">
           <div class="form-group custom-select-wrapper">
             <label>Team Name</label>
             <div class="custom-select" id="teamSelect">
@@ -162,7 +162,7 @@
 
           <div class="form-group">
             <label>Participant Names</label>
-            <textarea class="form-control" rows="3" placeholder="Enter all participant names (comma separated)" required></textarea>
+            <textarea id="participantsInput" class="form-control" rows="3" placeholder="Enter all participant names (comma separated)" required></textarea>
           </div>
           
 
@@ -245,6 +245,48 @@
             customSelect.classList.remove('open');
           }
         });
+      });
+      // Form Submission Logic
+      const registrationForm = document.getElementById('registrationForm');
+      registrationForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const teamName = document.getElementById('teamNameInput').value;
+        const eventName = document.getElementById('eventNameInput').value;
+        const participants = document.getElementById('participantsInput').value;
+        
+        if (!teamName || !eventName) {
+          alert('Please select both a Team and an Event.');
+          return;
+        }
+        
+        const submitBtn = registrationForm.querySelector('button[type="submit"] .btn-power-smash-content');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = 'REGISTERING...';
+        
+        try {
+          const response = await fetch('http://localhost:5000/api/registrations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ teamName, eventName, participants })
+          });
+          
+          if (!response.ok) throw new Error('Failed to register');
+          
+          alert('Registration successful!');
+          registrationForm.reset();
+          document.getElementById('teamNameInput').value = '';
+          document.getElementById('eventNameInput').value = '';
+          document.querySelectorAll('.selected-text').forEach(el => {
+            if (el.closest('#teamSelect')) el.textContent = 'Select a Team';
+            if (el.closest('#eventSelect')) el.textContent = 'Select an Event';
+          });
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Registration failed. Make sure the backend server is running.');
+        } finally {
+          submitBtn.innerText = originalText;
+        }
       });
     });
   </script>
