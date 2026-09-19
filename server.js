@@ -11,15 +11,24 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
-
-// GET /api/scores Endpoint
-app.get('/api/scores', async (req, res) => {
+let isConnected = false;
+const connectDB = async () => {
+  if (isConnected) return;
   try {
-    // Fetch all teams and sort by totalPoints in descending order
+    await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = true;
+    console.log('MongoDB Connected');
+  } catch (err) {
+    console.error('MongoDB Connection Error:', err);
+  }
+};
+
+const router = express.Router();
+
+// GET /scores Endpoint
+router.get('/scores', async (req, res) => {
+  await connectDB();
+  try {
     const teams = await Team.find().sort({ totalPoints: -1 });
     res.status(200).json({ data: teams });
   } catch (error) {
@@ -28,8 +37,9 @@ app.get('/api/scores', async (req, res) => {
   }
 });
 
-// POST /api/scores Endpoint (Create/Update Team Score)
-app.post('/api/scores', async (req, res) => {
+// POST /scores Endpoint
+router.post('/scores', async (req, res) => {
+  await connectDB();
   const { teamName, eventName, score } = req.body;
 
   if (!teamName || !eventName || score === undefined) {
@@ -37,18 +47,13 @@ app.post('/api/scores', async (req, res) => {
   }
 
   try {
-    // Check if team exists
     let team = await Team.findOne({ teamName });
     
     if (!team) {
-      // Create new team if they don't exist
       team = new Team({ teamName });
     }
     
-    // Update the specific event score
     team.scores[eventName] = Number(score);
-    
-    // Save to trigger the pre-save hook for totalPoints
     await team.save();
 
     res.status(200).json({ message: 'Score updated successfully', data: team });
@@ -58,8 +63,9 @@ app.post('/api/scores', async (req, res) => {
   }
 });
 
-// POST /api/registrations Endpoint
-app.post('/api/registrations', async (req, res) => {
+// POST /registrations Endpoint
+router.post('/registrations', async (req, res) => {
+  await connectDB();
   const { teamName, eventName, participants } = req.body;
   
   if (!teamName || !eventName || !participants) {
@@ -76,8 +82,9 @@ app.post('/api/registrations', async (req, res) => {
   }
 });
 
-// GET /api/registrations Endpoint
-app.get('/api/registrations', async (req, res) => {
+// GET /registrations Endpoint
+router.get('/registrations', async (req, res) => {
+  await connectDB();
   const { eventName } = req.query;
   
   try {
@@ -90,5 +97,15 @@ app.get('/api/registrations', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Mount the router
+app.use('/api', router);
+app.use('/.netlify/functions/api', router);
+
+module.exports = app;
+
+if (require.main === module) {
+  connectDB().then(() => {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  });
+}
