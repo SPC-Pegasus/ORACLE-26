@@ -5,8 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Oracle — Registration</title>
-  <meta name="description"
-    content="Register for Protocol 3000 neural interface and cybernetic preservation.">
+  <meta name="description" content="Register for Protocol 3000 neural interface and cybernetic preservation.">
 
   <!-- Google Fonts: Caveat, Inter, Space Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +28,8 @@
   </svg>
 
   <!-- Click Spark Canvas (React Bits Port) -->
-  <canvas id="clickSparkCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
+  <canvas id="clickSparkCanvas"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
 
   <div class="page-container">
 
@@ -54,7 +54,9 @@
 
       <div class="header-action">
         <a href="admin.html" title="Admin Login" style="display: flex; align-items: center;">
-          <img src="assets/st-pauls-logo.png" alt="St Pauls College" style="height: 1.8rem; object-fit: contain; filter: brightness(0.9); cursor: pointer; transition: all 0.3s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(0.9)'" />
+          <img src="assets/st-pauls-logo.png" alt="St Pauls College"
+            style="height: 1.8rem; object-fit: contain; filter: brightness(0.9); cursor: pointer; transition: all 0.3s;"
+            onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(0.9)'" />
         </a>
       </div>
     </header>
@@ -73,43 +75,49 @@
             <div class="custom-select" id="teamSelect">
               <div class="custom-select-trigger">
                 <span class="selected-text">Select a Team</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
               </div>
               <div class="custom-options">
-                <div class="custom-option" data-value="team_exiles">Team Exiles</div>
-                <div class="custom-option" data-value="team_mercenaries">Team Mercenaries</div>
-                <div class="custom-option" data-value="team_nexus">Team Nexus</div>
-                <div class="custom-option" data-value="team_nomads">Team Nomads</div>
-                <div class="custom-option" data-value="team_quantum">Team Quantum</div>
-                <div class="custom-option" data-value="team_nulls">Team Nulls</div>
-                <div class="custom-option" data-value="team_shadows">Team Shadows</div>
-                <div class="custom-option" data-value="team_void">Team Void</div>
+                <div class="custom-option" data-value="Team Exiles">Team Exiles</div>
+                <div class="custom-option" data-value="Team Mercenaries">Team Mercenaries</div>
+                <div class="custom-option" data-value="Team Nexus">Team Nexus</div>
+                <div class="custom-option" data-value="Team Nomads">Team Nomads</div>
+                <div class="custom-option" data-value="Team Quantum">Team Quantum</div>
+                <div class="custom-option" data-value="Team Nulls">Team Nulls</div>
+                <div class="custom-option" data-value="Team Shadows">Team Shadows</div>
+                <div class="custom-option" data-value="Team Void">Team Void</div>
               </div>
             </div>
             <input type="hidden" name="team" id="teamInput" required>
           </div>
 
-          
+
           <div class="form-group custom-select-wrapper">
             <label>Select Event</label>
             <div class="custom-select" id="eventSelect">
               <div class="custom-select-trigger">
                 <span class="selected-text">Select an Event</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
               </div>
               <div class="custom-options">
-                <div class="custom-option" data-value="deadshot">Deadshot</div>
-                <div class="custom-option" data-value="treasure_hunt">Treasure Hunt</div>
-                <div class="custom-option" data-value="free_fire">Free Fire</div>
-                <div class="custom-option" data-value="bgmi">BGMI</div>
-                <div class="custom-option" data-value="it_manager">IT Manager</div>
-                <div class="custom-option" data-value="it_quiz">IT Quiz</div>
-                <div class="custom-option" data-value="web_ai">Web AI</div>
-                <div class="custom-option" data-value="poster_making">Poster Making</div>
-                <div class="custom-option" data-value="group_dance">Group Dance</div>
-                <div class="custom-option" data-value="group_singing">Group Singing</div>
-                <div class="custom-option" data-value="fashion_show">Fashion Show</div>
-                <div class="custom-option" data-value="cosplay">Cosplay</div>
+                <div class="custom-option" data-value="Deadshot">Deadshot</div>
+                <div class="custom-option" data-value="Treasure Hunt">Treasure Hunt</div>
+                <div class="custom-option" data-value="Free Fire">Free Fire</div>
+                <div class="custom-option" data-value="BGMI">BGMI</div>
+                <div class="custom-option" data-value="IT Manager">IT Manager</div>
+                <div class="custom-option" data-value="IT Quiz">IT Quiz</div>
+                <div class="custom-option" data-value="Web AI">Web AI</div>
+                <div class="custom-option" data-value="Poster Making">Poster Making</div>
+                <div class="custom-option" data-value="Group Dance">Group Dance</div>
+                <div class="custom-option" data-value="Group Singing">Group Singing</div>
+                <div class="custom-option" data-value="Fashion Show">Fashion Show</div>
+                <div class="custom-option" data-value="Cosplay">Cosplay</div>
               </div>
             </div>
             <input type="hidden" name="event" id="eventInput" required>
@@ -120,12 +128,15 @@
             <div class="custom-select" id="cosplayThemeSelect">
               <div class="custom-select-trigger">
                 <span class="selected-text">Select a Theme</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
               </div>
               <div class="custom-options">
-                <div class="custom-option" data-value="mecha">Mecha Armor</div>
-                <div class="custom-option" data-value="neon_noir">Neon Noir</div>
-                <div class="custom-option" data-value="synth_rebel">Synth Rebel</div>
+                <div class="custom-option" data-value="mecha">Harry Potter</div>
+                <div class="custom-option" data-value="neon_noir">Cyberpunk(future)</div>
+
               </div>
             </div>
             <input type="hidden" name="cosplayTheme" id="cosplayThemeInput">
@@ -136,12 +147,17 @@
             <div class="custom-select" id="fashionThemeSelect">
               <div class="custom-select-trigger">
                 <span class="selected-text">Select a Theme</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
               </div>
               <div class="custom-options">
-                <div class="custom-option" data-value="haute_cyber">Haute Cyberpunk</div>
-                <div class="custom-option" data-value="street_tech">Street Techwear</div>
-                <div class="custom-option" data-value="corporate_elite">Corporate Elite</div>
+                <div class="custom-option" data-value="haute_cyber">Kings and Queens</div>
+                <div class="custom-option" data-value="street_tech">Hunters</div>
+                <div class="custom-option" data-value="corporate_elite">Enchanted (Fantasy)</div>
+                <div class="custom-option" data-value="the_missing_files">The Missing Files</div>
+                <div class="custom-option" data-value="the_world_around">The World Around</div>
               </div>
             </div>
             <input type="hidden" name="fashionTheme" id="fashionThemeInput">
@@ -149,9 +165,10 @@
 
           <div class="form-group">
             <label>Participant Names</label>
-            <textarea id="participantsInput" class="form-control" rows="3" placeholder="Enter all participant names (comma separated)" required></textarea>
+            <textarea id="participantsInput" class="form-control" rows="3"
+              placeholder="Enter all participant names (comma separated)" required></textarea>
           </div>
-          
+
 
           <button type="submit" class="btn-power-smash">
             <span class="btn-power-smash-overlay1"></span>
@@ -161,6 +178,19 @@
             </span>
           </button>
         </form>
+
+        <div style="margin-top: 2rem; text-align: center;">
+          <a href="https://drive.google.com/drive/folders/1Uo0dwe_DAZO2RUyEdCh01ZqIhlQjCLs-" id="driveLink"
+            target="_blank" style="text-decoration: none;">
+            <button type="button" class="btn-power-smash">
+              <span class="btn-power-smash-overlay1"></span>
+              <span class="btn-power-smash-overlay2"></span>
+              <span class="btn-power-smash-content">
+                UPLOAD SONG
+              </span>
+            </button>
+          </a>
+        </div>
       </div>
     </main>
 
@@ -193,21 +223,21 @@
         options.forEach(option => {
           option.addEventListener('click', () => {
             options.forEach(opt => opt.classList.remove('selected'));
-            
+
             option.classList.add('selected');
-            
+
             selectedText.textContent = option.textContent;
             if (hiddenInput) {
               hiddenInput.value = option.getAttribute('data-value');
             }
             selectTrigger.classList.add('selected');
-            
+
             // Handle Event specific sub-dropdowns
             if (customSelect.id === 'eventSelect') {
               const val = option.getAttribute('data-value');
               const cosplayWrapper = document.getElementById('cosplayThemeWrapper');
               const fashionWrapper = document.getElementById('fashionThemeWrapper');
-              
+
               if (val === 'cosplay') {
                 cosplayWrapper.style.display = 'block';
                 fashionWrapper.style.display = 'none';
@@ -237,33 +267,33 @@
       const registrationForm = document.getElementById('registrationForm');
       registrationForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const teamName = document.getElementById('teamNameInput').value;
-        const eventName = document.getElementById('eventNameInput').value;
+
+        const teamName = document.getElementById('teamInput').value;
+        const eventName = document.getElementById('eventInput').value;
         const participants = document.getElementById('participantsInput').value;
-        
+
         if (!teamName || !eventName) {
           alert('Please select both a Team and an Event.');
           return;
         }
-        
+
         const submitBtn = registrationForm.querySelector('button[type="submit"] .btn-power-smash-content');
         const originalText = submitBtn.innerText;
         submitBtn.innerText = 'REGISTERING...';
-        
+
         try {
-          const response = await fetch('http://localhost:5000/api/registrations', {
+          const response = await fetch('/api/registrations', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ teamName, eventName, participants })
           });
-          
+
           if (!response.ok) throw new Error('Failed to register');
-          
+
           alert('Registration successful!');
           registrationForm.reset();
-          document.getElementById('teamNameInput').value = '';
-          document.getElementById('eventNameInput').value = '';
+          document.getElementById('teamInput').value = '';
+          document.getElementById('eventInput').value = '';
           document.querySelectorAll('.selected-text').forEach(el => {
             if (el.closest('#teamSelect')) el.textContent = 'Select a Team';
             if (el.closest('#eventSelect')) el.textContent = 'Select an Event';

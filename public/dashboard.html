@@ -90,6 +90,7 @@
           <label for="downloadEventSelect">Select Event</label>
           <select id="downloadEventSelect" class="form-control" required>
             <option value="" disabled selected>Choose an event...</option>
+            <option value="Event Winners" style="font-weight: bold; color: #ff3366;">Event Winners</option>
             <option value="Overall Rankings" style="font-weight: bold; color: var(--primary-color);">Overall Rankings</option>
             <option value="Deadshot">Deadshot</option>
             <option value="Treasure Hunt">Treasure Hunt</option>
@@ -194,12 +195,29 @@
         submitBtn.innerText = 'GENERATING PDF...';
 
         try {
-          const response = await fetch('http://localhost:5000/api/scores');
+          const response = await fetch('/api/scores');
           if (!response.ok) throw new Error('Failed to fetch from backend');
           
           const result = await response.json();
           const teams = result.data;
           const selectedEvent = document.getElementById('downloadEventSelect').value;
+
+          // Identify individual events
+          const individualEvents = ['Deadshot', 'IT Manager', 'Poster Making', 'Cosplay'];
+          const isIndividual = individualEvents.includes(selectedEvent);
+
+          let registrations = [];
+          if (isIndividual) {
+            try {
+              const regResponse = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`);
+              if (regResponse.ok) {
+                const regResult = await regResponse.json();
+                registrations = regResult.data;
+              }
+            } catch (err) {
+              console.error('Failed to fetch registrations for individual event', err);
+            }
+          }
 
           const { jsPDF } = window.jspdf;
           
@@ -239,31 +257,74 @@
               ];
               tableRows.push(teamData);
             });
-          } else {
-            tableColumn = ["Rank", "Team Name", `${selectedEvent} Score`, "Total Points"];
+          } else if (selectedEvent === 'Event Winners') {
+            tableColumn = ["Event Name", "Winner", "Runner-Up"];
+            const allEvents = ['Deadshot', 'Treasure Hunt', 'Free Fire', 'BGMI', 'IT Manager', 'IT Quiz', 'Web AI', 'Poster Making', 'Group Dance', 'Group Singing', 'Fashion Show', 'Cosplay'];
             
-            teams.forEach((team, index) => {
-              const eventScore = team.scores[selectedEvent] || 0;
-              const teamData = [
-                index + 1,
-                team.teamName,
-                eventScore,
-                team.totalPoints
-              ];
-              tableRows.push(teamData);
+            allEvents.forEach(evt => {
+              // Extract all teams' scores for this specific event
+              let eventScores = teams.map(t => ({ teamName: t.teamName, score: t.scores[evt] || 0 }));
+              // Sort scores descending
+              eventScores.sort((a, b) => b.score - a.score);
+              
+              let winner = 'N/A';
+              let runnerUp = 'N/A';
+              
+              if (eventScores.length > 0 && eventScores[0].score > 0) {
+                winner = eventScores[0].teamName;
+              }
+              if (eventScores.length > 1 && eventScores[1].score > 0) {
+                runnerUp = eventScores[1].teamName;
+              }
+              
+              tableRows.push([evt, winner, runnerUp]);
             });
+          } else {
+            if (isIndividual) {
+              tableColumn = ["Rank", "Team Name", "Participant's Name", `${selectedEvent} Score`];
+              
+              teams.forEach((team, index) => {
+                const eventScore = team.scores[selectedEvent] || 0;
+                const reg = registrations.find(r => r.teamName === team.teamName);
+                const participantName = reg ? reg.participants : 'N/A';
+                
+                const teamData = [
+                  index + 1,
+                  team.teamName,
+                  participantName,
+                  eventScore
+                ];
+                tableRows.push(teamData);
+              });
+            } else {
+              tableColumn = ["Rank", "Team Name", `${selectedEvent} Score`, "Total Points"];
+              
+              teams.forEach((team, index) => {
+                const eventScore = team.scores[selectedEvent] || 0;
+                const teamData = [
+                  index + 1,
+                  team.teamName,
+                  eventScore,
+                  team.totalPoints
+                ];
+                tableRows.push(teamData);
+              });
+            }
           }
-
+          
           doc.autoTable({
             head: [tableColumn],
             body: tableRows,
             startY: 40,
             theme: 'grid',
-            styles: { fontSize: 10, cellPadding: 4 },
+            styles: { 
+              fontSize: selectedEvent === 'Overall Rankings' ? 8 : 10, 
+              cellPadding: selectedEvent === 'Overall Rankings' ? 1.5 : 4 
+            },
             headStyles: { fillColor: [41, 128, 185], textColor: 255 }
           });
 
-          const filename = `${selectedEvent.replace(/\\s+/g, '_').toLowerCase()}_report.pdf`;
+          const filename = `${selectedEvent.replace(/\s+/g, '_').toLowerCase()}_report.pdf`;
           doc.save(filename);
           
         } catch (error) {
@@ -285,7 +346,7 @@
 
         try {
           const selectedEvent = document.getElementById('downloadRegEventSelect').value;
-          const response = await fetch(`http://localhost:5000/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`);
+          const response = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`);
           if (!response.ok) throw new Error('Failed to fetch from backend');
           
           const result = await response.json();

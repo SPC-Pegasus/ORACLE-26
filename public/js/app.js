@@ -23,28 +23,34 @@ document.addEventListener('DOMContentLoaded', () => {
   function playTone(freq = 880, duration = 0.08, type = 'sine') {
     initAudio();
     if (!audioCtx) return;
-    try {
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
+    
+    const play = () => {
+      try {
+        const now = audioCtx.currentTime + 0.02; // Small buffer to ensure timing
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + duration);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + duration);
+      } catch (e) {
+        console.warn('Audio playback failed:', e);
       }
-      const now = audioCtx.currentTime + 0.02; // Small buffer to ensure timing
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, now);
-      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + duration);
+    };
 
-      gain.gain.setValueAtTime(0.12, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start(now);
-      osc.stop(now + duration);
-    } catch (e) {
-      console.warn('Audio playback failed:', e);
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(play);
+    } else {
+      play();
     }
   }
 
@@ -55,16 +61,33 @@ document.addEventListener('DOMContentLoaded', () => {
     ...navItems
   ];
 
+  // Wake up AudioContext on the first interaction anywhere on the page
+  document.body.addEventListener('click', () => {
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }, { once: true });
+
   // Restored Audio Feedback for Navigation
   if (btnTerminal) {
-    btnTerminal.addEventListener('mousedown', () => {
+    btnTerminal.addEventListener('click', () => {
       playTone(980, 0.09, 'sine');
     });
   }
 
   navItems.forEach(item => {
-    item.addEventListener('mousedown', () => {
+    item.addEventListener('click', (e) => {
       playTone(980, 0.09, 'sine');
+      
+      // Intercept navigation to let the sound play fully
+      const targetHref = item.getAttribute('href');
+      if (targetHref && !targetHref.startsWith('#') && item.getAttribute('target') !== '_blank') {
+        e.preventDefault();
+        setTimeout(() => {
+          window.location.href = targetHref;
+        }, 300); // Increased delay so the audio engine has time to wake up if it's the first click
+      }
       
       // Auto-reset the white pill so it doesn't get stuck on the home screen
       setTimeout(() => {
@@ -75,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Subject click audio feedback
   if (subjectWrapper) {
-    subjectWrapper.addEventListener('mousedown', () => {
+    subjectWrapper.addEventListener('click', () => {
       playTone(1320, 0.12, 'triangle');
     });
   }
@@ -83,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Submit button audio feedback
   const submitBtns = document.querySelectorAll('.btn-power-smash');
   submitBtns.forEach(btn => {
-    btn.addEventListener('mousedown', () => {
+    btn.addEventListener('click', () => {
       playTone(523.25, 0.15, 'sine'); // Soft, pleasant chime
     });
   });
