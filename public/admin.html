@@ -35,7 +35,7 @@
     <!-- Top Navigation -->
     <header class="top-nav-bar">
       <div class="brand-logo">
-        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE</span></a>
+        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE<sup style="font-size: 0.55em; margin-left: 0.05em;">'26</sup></span></a>
       </div>
 
       <div class="gooey-nav-container" id="gooeyNav">
@@ -77,7 +77,7 @@
             <div class="btn-power-smash-overlay1"></div>
             <div class="btn-power-smash-overlay2"></div>
             <div class="btn-power-smash-content">
-              <svg class="btn-power-smash-icon" xmlns="http://www.000webhost.com" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="btn-power-smash-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
               AUTHORIZE
@@ -97,13 +97,21 @@
       if(loginForm) {
         loginForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          // Provide some visual feedback
-          const btn = loginForm.querySelector('button');
-          btn.innerHTML = 'VERIFYING...';
+          const id = document.getElementById('adminId').value;
+          const pass = document.getElementById('adminPass').value;
           
-          setTimeout(() => {
-            window.location.href = 'dashboard.html';
-          }, 600);
+          if (id === 'pegasus' && pass === 'oraclepega') {
+            // Provide some visual feedback
+            const btn = loginForm.querySelector('button');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = 'VERIFYING...';
+            
+            setTimeout(() => {
+              window.location.href = 'dashboard.html';
+            }, 600);
+          } else {
+            alert('Access Denied: Invalid Credentials');
+          }
         });
       }
     });

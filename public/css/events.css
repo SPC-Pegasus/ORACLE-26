@@ -169,3 +169,7 @@
     font-size: 3rem;
   }
 }
+
+.highlight-pill { display: inline-block; background: rgba(0, 240, 255, 0.1); color: var(--blue-neon); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid rgba(0, 240, 255, 0.2); font-weight: 700; margin-right: 0.4rem; font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; }
+.doc-event-rules li.pill-item::before { content: none; }
+.doc-event-rules li.pill-item { padding-left: 0; }

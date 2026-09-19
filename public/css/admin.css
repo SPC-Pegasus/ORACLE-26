@@ -156,6 +156,11 @@
   color: rgba(255, 255, 255, 0.3);
 }
 
+.form-control option {
+  background: var(--bg-primary, #0c0f16);
+  color: #fff;
+}
+
 /* Custom File Input */
 .file-upload-wrapper {
   position: relative;

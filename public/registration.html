@@ -53,7 +53,9 @@
       </div>
 
       <div class="header-action">
-        <a href="admin.html"><button class="pill-btn primary" title="Admin Access">Admin</button></a>
+        <a href="admin.html" title="Admin Login" style="display: flex; align-items: center;">
+          <img src="assets/st-pauls-logo.png" alt="St Pauls College" style="height: 1.8rem; object-fit: contain; filter: brightness(0.9); cursor: pointer; transition: all 0.3s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(0.9)'" />
+        </a>
       </div>
     </header>
 
@@ -86,22 +88,7 @@
             </div>
             <input type="hidden" name="team" id="teamInput" required>
           </div>
-          
-          <div class="form-group custom-select-wrapper">
-            <label>Event Type</label>
-            <div class="custom-select" id="eventTypeSelect">
-              <div class="custom-select-trigger">
-                <span class="selected-text">Select Event Type</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </div>
-              <div class="custom-options">
-                <div class="custom-option" data-value="solo">Solo Operation</div>
-                <div class="custom-option" data-value="squad">Squad Mission</div>
-                <div class="custom-option" data-value="corporate">Corporate Sponsored</div>
-              </div>
-            </div>
-            <input type="hidden" name="eventType" id="eventTypeInput" required>
-          </div>
+
           
           <div class="form-group custom-select-wrapper">
             <label>Select Event</label>

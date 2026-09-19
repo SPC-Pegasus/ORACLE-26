@@ -315,3 +315,100 @@ document.addEventListener('DOMContentLoaded', () => {
   initGooeyNav();
 
 });
+
+/* ==========================================================================
+   Custom Select Glassmorphic Component
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const selects = document.querySelectorAll('select.form-control');
+  
+  selects.forEach(select => {
+    initCustomSelect(select);
+  });
+  
+  function initCustomSelect(select) {
+    if (select.parentElement.classList.contains('custom-select-wrapper')) {
+      return; // Already initialized
+    }
+
+    // Hide original select
+    select.style.display = 'none';
+    
+    // Create wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'custom-select-wrapper';
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(select);
+    
+    // Create trigger
+    const trigger = document.createElement('div');
+    trigger.className = 'custom-select-trigger';
+    wrapper.appendChild(trigger);
+    
+    // Create options container
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'custom-select-options';
+    wrapper.appendChild(optionsContainer);
+    
+    function renderOptions() {
+      const selectedOption = select.options[select.selectedIndex];
+      trigger.innerHTML = `<span>${selectedOption ? selectedOption.text : 'Select...'}</span><div class="arrow"></div>`;
+      
+      optionsContainer.innerHTML = '';
+      Array.from(select.options).forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'custom-option' + (option.selected ? ' selected' : '') + (option.disabled ? ' disabled' : '');
+        optionDiv.textContent = option.text;
+        
+        if (!option.disabled) {
+          optionDiv.addEventListener('click', () => {
+            select.selectedIndex = index;
+            trigger.querySelector('span').textContent = option.text;
+            optionsContainer.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
+            optionDiv.classList.add('selected');
+            wrapper.classList.remove('open');
+            
+            // Trigger change event
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+        }
+        optionsContainer.appendChild(optionDiv);
+      });
+    }
+
+    renderOptions();
+
+    // Toggle dropdown
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.custom-select-wrapper').forEach(w => {
+        if (w !== wrapper) w.classList.remove('open');
+      });
+      wrapper.classList.toggle('open');
+    });
+    
+    // Handle changes from other scripts
+    select.addEventListener('change', () => {
+        const selectedOption = select.options[select.selectedIndex];
+        if (selectedOption) trigger.querySelector('span').textContent = selectedOption.text;
+        
+        optionsContainer.querySelectorAll('.custom-option').forEach((opt, idx) => {
+            if (idx === select.selectedIndex) opt.classList.add('selected');
+            else opt.classList.remove('selected');
+        });
+    });
+
+    // Watch for dynamic option changes
+    const observer = new MutationObserver(() => {
+      renderOptions();
+    });
+    observer.observe(select, { childList: true });
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.custom-select-wrapper').forEach(w => {
+      w.classList.remove('open');
+    });
+  });
+});
