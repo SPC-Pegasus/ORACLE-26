@@ -263,6 +263,20 @@
           }
         });
       });
+
+      // Auto-select event from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const preselectedEvent = urlParams.get('event');
+      if (preselectedEvent) {
+        const eventSelect = document.getElementById('eventSelect');
+        if (eventSelect) {
+          const optionToSelect = eventSelect.querySelector(`.custom-option[data-value="${preselectedEvent}"]`);
+          if (optionToSelect) {
+            optionToSelect.click();
+          }
+        }
+      }
+
       // Form Submission Logic
       const registrationForm = document.getElementById('registrationForm');
       registrationForm.addEventListener('submit', async (e) => {
