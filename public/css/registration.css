@@ -28,6 +28,7 @@
 }
 
 .reg-title {
+  text-align: center;
   font-family: var(--font-hero);
   font-size: 2.8rem;
   color: #fff;
@@ -38,6 +39,7 @@
 }
 
 .reg-desc {
+  text-align: center;
   color: var(--text-muted);
   font-family: var(--font-body);
   margin-bottom: 2.5rem;
