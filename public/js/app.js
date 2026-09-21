@@ -8,6 +8,50 @@ document.addEventListener('DOMContentLoaded', () => {
   const navItems = document.querySelectorAll('.nav-item');
 
   // =========================================================================
+  // Loading Progress Bar (Instant Feedback)
+  // =========================================================================
+  function startFakeProgress() {
+    let progressBar = document.getElementById('fake-progress-bar');
+    if (!progressBar) {
+      progressBar = document.createElement('div');
+      progressBar.id = 'fake-progress-bar';
+      progressBar.style.position = 'fixed';
+      progressBar.style.top = '0';
+      progressBar.style.left = '0';
+      progressBar.style.height = '3px';
+      progressBar.style.backgroundColor = 'var(--theme-primary)';
+      progressBar.style.boxShadow = '0 0 15px var(--theme-glow)';
+      progressBar.style.zIndex = '999999';
+      progressBar.style.width = '0%';
+      progressBar.style.transition = 'width 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease';
+      document.body.appendChild(progressBar);
+    }
+    
+    progressBar.style.opacity = '1';
+    
+    // Force reflow
+    void progressBar.offsetWidth;
+    
+    progressBar.style.width = '40%';
+    
+    setTimeout(() => {
+      if (progressBar.style.width === '40%') {
+        progressBar.style.width = '75%';
+      }
+    }, 400);
+  }
+
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link && link.href && !link.href.startsWith('javascript:') && !link.getAttribute('href').startsWith('#') && link.target !== '_blank') {
+      // Check if it's an internal link
+      if (link.hostname === window.location.hostname) {
+        startFakeProgress();
+      }
+    }
+  });
+
+  // =========================================================================
   // Web Audio Synthesizer (Chirp & Impact SFX)
   // =========================================================================
   let audioCtx = null;
