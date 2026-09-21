@@ -54,6 +54,7 @@ router.post('/scores', async (req, res) => {
     }
     
     team.scores[eventName] = Number(score);
+    team.markModified('scores');
     await team.save();
 
     res.status(200).json({ message: 'Score updated successfully', data: team });

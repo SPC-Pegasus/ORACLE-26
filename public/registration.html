@@ -339,6 +339,7 @@
           document.getElementById('eventInput').value = '';
           document.getElementById('cosplayThemeInput').value = '';
           document.getElementById('fashionThemeInput').value = '';
+          document.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
           document.querySelectorAll('.selected-text').forEach(el => {
             if (el.closest('#teamSelect')) el.textContent = 'Select a Team';
             if (el.closest('#eventSelect')) el.textContent = 'Select an Event';
