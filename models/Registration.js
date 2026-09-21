@@ -13,6 +13,9 @@ const registrationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  theme: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now

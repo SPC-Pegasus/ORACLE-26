@@ -66,14 +66,14 @@ router.post('/scores', async (req, res) => {
 // POST /registrations Endpoint
 router.post('/registrations', async (req, res) => {
   await connectDB();
-  const { teamName, eventName, participants } = req.body;
+  const { teamName, eventName, participants, theme } = req.body;
   
   if (!teamName || !eventName || !participants) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
-    const newReg = new Registration({ teamName, eventName, participants });
+    const newReg = new Registration({ teamName, eventName, participants, theme });
     await newReg.save();
     res.status(201).json({ message: 'Registration successful', data: newReg });
   } catch (error) {

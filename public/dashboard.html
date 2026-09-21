@@ -207,7 +207,7 @@
           const isIndividual = individualEvents.includes(selectedEvent);
 
           let registrations = [];
-          if (isIndividual) {
+          if (isIndividual || selectedEvent === 'Fashion Show') {
             try {
               const regResponse = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`);
               if (regResponse.ok) {
@@ -215,7 +215,7 @@
                 registrations = regResult.data;
               }
             } catch (err) {
-              console.error('Failed to fetch registrations for individual event', err);
+              console.error('Failed to fetch registrations for event', err);
             }
           }
 
@@ -282,6 +282,9 @@
           } else {
             if (isIndividual) {
               tableColumn = ["Rank", "Team Name", "Participant's Name", `${selectedEvent} Score`];
+              if (selectedEvent === 'Cosplay') {
+                tableColumn.splice(3, 0, "Theme");
+              }
               
               teams.forEach((team, index) => {
                 const eventScore = team.scores[selectedEvent] || 0;
@@ -291,22 +294,36 @@
                 const teamData = [
                   index + 1,
                   team.teamName,
-                  participantName,
-                  eventScore
+                  participantName
                 ];
+
+                if (selectedEvent === 'Cosplay') {
+                  teamData.push(reg ? (reg.theme || 'N/A') : 'N/A');
+                }
+                
+                teamData.push(eventScore);
                 tableRows.push(teamData);
               });
             } else {
               tableColumn = ["Rank", "Team Name", `${selectedEvent} Score`, "Total Points"];
+              if (selectedEvent === 'Fashion Show') {
+                tableColumn.splice(2, 0, "Theme");
+              }
               
               teams.forEach((team, index) => {
                 const eventScore = team.scores[selectedEvent] || 0;
+                
                 const teamData = [
                   index + 1,
-                  team.teamName,
-                  eventScore,
-                  team.totalPoints
+                  team.teamName
                 ];
+                
+                if (selectedEvent === 'Fashion Show') {
+                  const reg = registrations.find(r => r.teamName === team.teamName);
+                  teamData.push(reg ? (reg.theme || 'N/A') : 'N/A');
+                }
+                
+                teamData.push(eventScore, team.totalPoints);
                 tableRows.push(teamData);
               });
             }
@@ -362,6 +379,9 @@
           doc.text(`Generated on: ${new Date().toLocaleString()} | Total Teams: ${registrations.length}`, 14, 30);
 
           let tableColumn = ["#", "Team Name", "Participants"];
+          if (selectedEvent === 'Cosplay' || selectedEvent === 'Fashion Show') {
+            tableColumn.push("Theme");
+          }
           let tableRows = [];
 
           registrations.forEach((reg, index) => {
@@ -370,6 +390,9 @@
               reg.teamName,
               reg.participants
             ];
+            if (selectedEvent === 'Cosplay' || selectedEvent === 'Fashion Show') {
+              rowData.push(reg.theme || 'N/A');
+            }
             tableRows.push(rowData);
           });
 

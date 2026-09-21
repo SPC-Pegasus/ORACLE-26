@@ -313,6 +313,13 @@
           }
         }
 
+        let theme = '';
+        if (eventName === 'Cosplay') {
+          theme = document.getElementById('cosplayThemeInput').value;
+        } else if (eventName === 'Fashion Show') {
+          theme = document.getElementById('fashionThemeInput').value;
+        }
+
         const submitBtn = registrationForm.querySelector('button[type="submit"] .btn-power-smash-content');
         const originalText = submitBtn.innerText;
         submitBtn.innerText = 'REGISTERING...';
@@ -321,7 +328,7 @@
           const response = await fetch('/api/registrations', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ teamName, eventName, participants })
+            body: JSON.stringify({ teamName, eventName, participants, theme })
           });
 
           if (!response.ok) throw new Error('Failed to register');
@@ -330,9 +337,13 @@
           registrationForm.reset();
           document.getElementById('teamInput').value = '';
           document.getElementById('eventInput').value = '';
+          document.getElementById('cosplayThemeInput').value = '';
+          document.getElementById('fashionThemeInput').value = '';
           document.querySelectorAll('.selected-text').forEach(el => {
             if (el.closest('#teamSelect')) el.textContent = 'Select a Team';
             if (el.closest('#eventSelect')) el.textContent = 'Select an Event';
+            if (el.closest('#cosplayThemeSelect')) el.textContent = 'Select a Theme';
+            if (el.closest('#fashionThemeSelect')) el.textContent = 'Select a Theme';
           });
         } catch (error) {
           console.error('Error:', error);
