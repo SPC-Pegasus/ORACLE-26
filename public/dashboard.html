@@ -195,7 +195,7 @@
         submitBtn.innerText = 'GENERATING PDF...';
 
         try {
-          const response = await fetch('/api/scores');
+          const response = await fetch('/api/scores', { cache: 'no-store' });
           if (!response.ok) throw new Error('Failed to fetch from backend');
           
           const result = await response.json();
@@ -209,7 +209,7 @@
           let registrations = [];
           if (isIndividual || selectedEvent === 'Fashion Show') {
             try {
-              const regResponse = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`);
+              const regResponse = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`, { cache: 'no-store' });
               if (regResponse.ok) {
                 const regResult = await regResponse.json();
                 registrations = regResult.data;
@@ -363,7 +363,7 @@
 
         try {
           const selectedEvent = document.getElementById('downloadRegEventSelect').value;
-          const response = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`);
+          const response = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`, { cache: 'no-store' });
           if (!response.ok) throw new Error('Failed to fetch from backend');
           
           const result = await response.json();

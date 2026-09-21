@@ -159,7 +159,7 @@
         tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
         
         try {
-          const response = await fetch(API_URL);
+          const response = await fetch(API_URL, { cache: 'no-store' });
           if (!response.ok) throw new Error('Failed to fetch from backend');
           
           const result = await response.json();
