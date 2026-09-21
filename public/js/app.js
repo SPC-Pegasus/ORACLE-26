@@ -84,9 +84,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetHref = item.getAttribute('href');
       if (targetHref && !targetHref.startsWith('#') && item.getAttribute('target') !== '_blank') {
         e.preventDefault();
+        
+        // Add subtle exit transition effect
+        const pageContainer = document.querySelector('.page-container');
+        if (pageContainer) {
+          pageContainer.style.transition = 'filter 0.1s ease-out, transform 0.1s ease-out';
+          pageContainer.style.filter = 'blur(3px)';
+          pageContainer.style.transform = 'scale(0.99)';
+        }
+
         setTimeout(() => {
           window.location.href = targetHref;
-        }, 300); // Increased delay so the audio engine has time to wake up if it's the first click
+        }, 80); // Minimal delay for a snappy feel while still allowing audio to trigger
       }
       
       // Auto-reset the white pill so it doesn't get stuck on the home screen
@@ -335,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  initGooeyNav();
+  // initGooeyNav();
 
 });
 

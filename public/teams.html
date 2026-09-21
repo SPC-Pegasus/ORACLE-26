@@ -5,8 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Oracle — Teams</title>
-  <meta name="description"
-    content="Active Squads and Solo Operatives registered for Protocol 3000.">
+  <meta name="description" content="Active Squads and Solo Operatives registered for Protocol 3000.">
 
   <!-- Google Fonts: Caveat, Inter, Space Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,14 +28,16 @@
   </svg>
 
   <!-- Click Spark Canvas (React Bits Port) -->
-  <canvas id="clickSparkCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
+  <canvas id="clickSparkCanvas"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999;"></canvas>
 
   <div class="page-container">
 
     <!-- Top Navigation -->
     <header class="top-nav-bar">
       <div class="brand-logo">
-        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE<sup style="font-size: 0.55em; margin-left: 0.05em;">'26</sup></span></a>
+        <a href="index.html" style="text-decoration: none;"><span class="logo-text">ORACLE<sup
+              style="font-size: 0.55em; margin-left: 0.05em;">'26</sup></span></a>
       </div>
 
       <div class="gooey-nav-container" id="gooeyNav">
@@ -54,22 +55,24 @@
 
       <div class="header-action">
         <a href="admin.html" title="Admin Login" style="display: flex; align-items: center;">
-          <img src="assets/st-pauls-logo.png" alt="St Pauls College" style="height: 1.8rem; object-fit: contain; filter: brightness(0.9); cursor: pointer; transition: all 0.3s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(0.9)'" />
+          <img src="assets/st-pauls-logo.png" alt="St Pauls College"
+            style="height: 1.8rem; object-fit: contain; filter: brightness(0.9); cursor: pointer; transition: all 0.3s;"
+            onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(0.9)'" />
         </a>
       </div>
     </header>
 
     <!-- Teams Stage -->
     <main class="teams-stage">
-      
+
       <div class="teams-wrapper">
         <div class="teams-header">
           <h1 class="teams-title">Team Members</h1>
-          
+
         </div>
 
         <div class="teams-grid">
-          
+
           <!-- Team 1 -->
           <div class="team-card">
             <div class="team-card-header">
@@ -255,6 +258,7 @@
               <li class="team-member">Shreesha V - BCA 3rd Year</li>
               <li class="team-member">Komala R - BCA 3rd Year</li>
               <li class="team-member">Samuyel - BCA 3rd Year</li>
+              <li class="team-member">Nithyashree.V - BCA 3rd Year</li>
               <li class="team-member">Dhanushree C - BCA 3rd Year</li>
               <li class="team-member">Sushmabai J - BCA 2nd Year</li>
               <li class="team-member">Bhavana K - BCA 2nd Year</li>
@@ -384,6 +388,7 @@
               <li class="team-member">Mananya L - BCA 3rd Year</li>
               <li class="team-member">Yakshitha N B - BCA 3rd Year</li>
               <li class="team-member">RUSHMITHA - BCA 3rd Year</li>
+              <li class="team-member">Nithyashree.V - BCA 3rd Year</li>
               <li class="team-member">Nithyashree R - BCA 3rd Year</li>
               <li class="team-member">Nithyashree.V - BCA 3rd Year</li>
               <li class="team-member">Anjali K V - BCA 3rd Year</li>
@@ -429,12 +434,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       const wrapper = document.querySelector('.teams-wrapper');
       const cards = document.querySelectorAll('.team-card');
-      
+
       cards.forEach(card => {
         const header = card.querySelector('.team-card-header');
         header.addEventListener('click', () => {
           const isExpanded = card.classList.contains('expanded');
-          
+
           if (isExpanded) {
             // Close current card and return to grid view
             card.classList.remove('expanded');
