@@ -196,6 +196,7 @@
 
   </div>
 
+  <script src="js/teamData.js"></script>
   <script src="js/app.js"></script>
   <script>
     // Custom Select Dropdown Logic
@@ -289,6 +290,27 @@
         if (!teamName || !eventName) {
           alert('Please select both a Team and an Event.');
           return;
+        }
+
+        // Validate participants against team members list
+        if (typeof teamMembersData !== 'undefined' && teamMembersData[teamName]) {
+          const teamList = teamMembersData[teamName].map(name => name.toLowerCase().replace(/[^a-z0-9 ]/g, ''));
+          const enteredNames = participants.split(',').map(name => name.trim()).filter(name => name !== '');
+          
+          let invalidNames = [];
+          for (let name of enteredNames) {
+            const nameLower = name.toLowerCase().replace(/[^a-z0-9 ]/g, '');
+            // Simple includes check
+            const isMatch = teamList.some(member => member.includes(nameLower) || nameLower.includes(member));
+            if (!isMatch) {
+              invalidNames.push(name);
+            }
+          }
+
+          if (invalidNames.length > 0) {
+            alert('Error: The following participants are not registered in ' + teamName + ':\n- ' + invalidNames.join('\n- ') + '\n\nPlease check the team list and try again.');
+            return;
+          }
         }
 
         const submitBtn = registrationForm.querySelector('button[type="submit"] .btn-power-smash-content');
