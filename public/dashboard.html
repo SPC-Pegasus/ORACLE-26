@@ -92,7 +92,6 @@
             <option value="" disabled selected>Choose an event...</option>
             <option value="Event Winners" style="font-weight: bold; color: #ff3366;">Event Winners</option>
             <option value="Overall Rankings" style="font-weight: bold; color: var(--primary-color);">Overall Rankings</option>
-            <option value="Deadshot">Deadshot</option>
             <option value="NFS">NFS</option>
             <option value="Treasure Hunt">Treasure Hunt</option>
             <option value="Free Fire">Free Fire</option>
@@ -130,7 +129,6 @@
           <label for="downloadRegEventSelect">Select Event</label>
           <select id="downloadRegEventSelect" class="form-control" required>
             <option value="" disabled selected>Choose an event...</option>
-            <option value="Deadshot">Deadshot</option>
             <option value="NFS">NFS</option>
             <option value="Treasure Hunt">Treasure Hunt</option>
             <option value="Free Fire">Free Fire</option>
@@ -205,7 +203,7 @@
           const selectedEvent = document.getElementById('downloadEventSelect').value;
 
           // Identify individual events
-          const individualEvents = ['Deadshot', 'NFS', 'IT Manager', 'Poster Making', 'Cosplay'];
+          const individualEvents = ['NFS', 'IT Manager', 'Poster Making', 'Cosplay'];
           const isIndividual = individualEvents.includes(selectedEvent);
 
           let registrations = [];
@@ -237,13 +235,12 @@
           let tableRows = [];
 
           if (selectedEvent === 'Overall Rankings') {
-            tableColumn = ["Rank", "Team Name", "Deadshot", "NFS", "Hunt", "FFire", "BGMI", "Manager", "Quiz", "Web AI", "Poster", "Dance", "Singing", "Fashion", "Cosplay", "TOTAL"];
+            tableColumn = ["Rank", "Team Name", "NFS", "Hunt", "FFire", "BGMI", "Manager", "Quiz", "Web AI", "Poster", "Dance", "Singing", "Fashion", "Cosplay", "TOTAL"];
             
             teams.forEach((team, index) => {
               const teamData = [
                 index + 1,
                 team.teamName,
-                team.scores['Deadshot'] || 0,
                 team.scores['NFS'] || 0,
                 team.scores['Treasure Hunt'] || 0,
                 team.scores['Free Fire'] || 0,
@@ -262,7 +259,7 @@
             });
           } else if (selectedEvent === 'Event Winners') {
             tableColumn = ["Event Name", "Winner", "Runner-Up"];
-            const allEvents = ['Deadshot', 'NFS', 'Treasure Hunt', 'Free Fire', 'BGMI', 'IT Manager', 'IT Quiz', 'Web AI', 'Poster Making', 'Group Dance', 'Group Singing', 'Fashion Show', 'Cosplay'];
+            const allEvents = ['NFS', 'Treasure Hunt', 'Free Fire', 'BGMI', 'IT Manager', 'IT Quiz', 'Web AI', 'Poster Making', 'Group Dance', 'Group Singing', 'Fashion Show', 'Cosplay'];
             
             allEvents.forEach(evt => {
               // Extract all teams' scores for this specific event

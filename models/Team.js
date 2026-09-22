@@ -7,7 +7,6 @@ const teamSchema = new mongoose.Schema({
     unique: true,
   },
   scores: {
-    'Deadshot': { type: Number, default: 0 },
     'NFS': { type: Number, default: 0 },
     'Treasure Hunt': { type: Number, default: 0 },
     'Free Fire': { type: Number, default: 0 },
