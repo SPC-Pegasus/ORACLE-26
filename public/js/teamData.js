@@ -187,6 +187,7 @@ const teamMembersData = {
     "Kusuma K V",
     "Kavya S",
     "Madhumitha B",
+    "Tejas R",
     "Archana R",
     "Vikasa G J",
     "Varun P",
