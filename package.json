@@ -14,16 +14,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/SahilPathan18/Oracle/issues"
   },
   "homepage": "https://github.com/SahilPathan18/Oracle#readme",
   "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "mongoose": "^9.10.1",
-    "serverless-http": "^4.0.0"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
+    "mongoose": "^8.4.1",
+    "serverless-http": "^3.2.0"
   }
 }
