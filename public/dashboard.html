@@ -427,7 +427,6 @@
             let grandTotalTeams = 0;
             let grandTotalParticipants = 0;
             const uniqueNamesSet = new Set();
-            const teamParticipation = {};
 
             const eventSummaryRows = all12Events.map((evt, idx) => {
               const eventRegs = registrations.filter(r => r.eventName === evt.name);
@@ -437,12 +436,6 @@
                 const names = parseNames(reg.participants);
                 eventParticipantsCount += names.length;
                 names.forEach(n => uniqueNamesSet.add(n.toLowerCase()));
-
-                if (!teamParticipation[reg.teamName]) {
-                  teamParticipation[reg.teamName] = { eventCount: 0, participantCount: 0 };
-                }
-                teamParticipation[reg.teamName].eventCount += 1;
-                teamParticipation[reg.teamName].participantCount += names.length;
               });
 
               grandTotalTeams += eventRegs.length;
@@ -490,29 +483,7 @@
               }
             });
 
-            // Table 2: Team-Wise Participation Breakdown
-            const teamRows = Object.keys(teamParticipation).sort().map((tName, i) => [
-              i + 1,
-              tName,
-              teamParticipation[tName].eventCount,
-              teamParticipation[tName].participantCount
-            ]);
 
-            doc.autoTable({
-              head: [["#", "Team Name", "Events Entered (of 12)", "Total Participants Fielded"]],
-              body: teamRows,
-              foot: [["", "TOTAL", `${teamRows.length} Teams`, grandTotalParticipants]],
-              startY: doc.lastAutoTable.finalY + 12,
-              theme: 'grid',
-              styles: { fontSize: 9.5, cellPadding: 3.5 },
-              headStyles: { fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold' },
-              footStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
-              columnStyles: {
-                0: { cellWidth: 10, halign: 'center' },
-                2: { halign: 'center' },
-                3: { halign: 'center', fontStyle: 'bold' }
-              }
-            });
 
             doc.save("oracle26_total_participants_summary.pdf");
             return;
