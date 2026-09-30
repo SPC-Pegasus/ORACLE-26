@@ -101,6 +101,8 @@
           const pass = document.getElementById('adminPass').value;
           
           if (id === 'pegasus' && pass === 'oraclepega') {
+            // Store the admin API key for authenticated API requests
+            sessionStorage.setItem('adminApiKey', pass);
             // Provide some visual feedback
             const btn = loginForm.querySelector('button');
             const originalContent = btn.innerHTML;

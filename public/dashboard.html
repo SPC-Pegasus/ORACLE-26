@@ -185,6 +185,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Check if admin is authenticated
+      if (!sessionStorage.getItem('adminApiKey')) {
+        window.location.href = 'admin.html';
+        return;
+      }
 
       const downloadForm = document.getElementById('downloadForm');
       downloadForm.addEventListener('submit', async (e) => {
@@ -209,7 +214,12 @@
           let registrations = [];
           if (isIndividual || selectedEvent === 'Fashion Show') {
             try {
-              const regResponse = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`, { cache: 'no-store' });
+              const regResponse = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`, {
+                cache: 'no-store',
+                headers: {
+                  'x-api-key': sessionStorage.getItem('adminApiKey') || ''
+                }
+              });
               if (regResponse.ok) {
                 const regResult = await regResponse.json();
                 registrations = regResult.data;
@@ -346,7 +356,7 @@
           
         } catch (error) {
           console.error('Error generating PDF:', error);
-          alert('Failed to generate PDF. Make sure your MongoDB backend is running!');
+          alert(error.message || 'Failed to generate PDF. Make sure your MongoDB backend is running!');
         } finally {
           submitBtn.innerText = originalText;
           closeModals();
@@ -363,7 +373,15 @@
 
         try {
           const selectedEvent = document.getElementById('downloadRegEventSelect').value;
-          const response = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`, { cache: 'no-store' });
+          const response = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`, {
+            cache: 'no-store',
+            headers: {
+              'x-api-key': sessionStorage.getItem('adminApiKey') || ''
+            }
+          });
+          if (response.status === 403) {
+            throw new Error('Access denied: Invalid or missing Admin API Key. Please log in again via admin.html.');
+          }
           if (!response.ok) throw new Error('Failed to fetch from backend');
           
           const result = await response.json();
@@ -410,7 +428,7 @@
           
         } catch (error) {
           console.error('Error generating PDF:', error);
-          alert('Failed to generate PDF. Make sure your MongoDB backend is running!');
+          alert(error.message || 'Failed to generate PDF. Make sure your MongoDB backend is running!');
         } finally {
           submitBtn.innerText = originalText;
           closeModals();

@@ -144,6 +144,12 @@
   <script src="js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Check if admin is authenticated
+      if (!sessionStorage.getItem('adminApiKey')) {
+        window.location.href = 'admin.html';
+        return;
+      }
+
       const enterDataForm = document.getElementById('enterDataForm');
       const eventSelect = document.getElementById('eventSelect');
       const teamNameSelect = document.getElementById('teamNameSelect');
@@ -217,17 +223,21 @@
         }
 
         const eventName = eventSelect.value;
-        const score = document.getElementById('scoreMarks').value;
+        const score = Number(document.getElementById('scoreMarks').value);
 
         try {
           const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'x-api-key': sessionStorage.getItem('adminApiKey') || ''
             },
             body: JSON.stringify({ teamName, eventName, score })
           });
 
+          if (response.status === 403) {
+            throw new Error('Access denied: Invalid or missing Admin API Key. Please log in again via admin.html.');
+          }
           if (!response.ok) throw new Error('Failed to save data');
           
           // Clear inputs but keep event selected
@@ -241,7 +251,7 @@
           
         } catch (error) {
           console.error(error);
-          alert('Error saving data. Make sure the backend is running!');
+          alert(error.message || 'Error saving data. Make sure the backend is running!');
         } finally {
           setTimeout(() => {
             if (submitBtn.innerText === 'SAVED SUCCESSFULLY!') {
