@@ -91,28 +91,42 @@
 
   <script src="js/app.js"></script>
   <script>
-    // Fake login logic
+    // Admin authentication
     document.addEventListener('DOMContentLoaded', () => {
       const loginForm = document.getElementById('adminLoginForm');
-      if(loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const id = document.getElementById('adminId').value;
+          const id = document.getElementById('adminId').value.trim();
           const pass = document.getElementById('adminPass').value;
           
-          if (id === 'pegasus' && pass === 'oraclepega') {
-            // Store the admin API key for authenticated API requests
-            sessionStorage.setItem('adminApiKey', pass);
-            // Provide some visual feedback
-            const btn = loginForm.querySelector('button');
-            const originalContent = btn.innerHTML;
-            btn.innerHTML = 'VERIFYING...';
-            
-            setTimeout(() => {
-              window.location.href = 'dashboard.html';
-            }, 600);
-          } else {
-            alert('Access Denied: Invalid Credentials');
+          const btn = loginForm.querySelector('button');
+          const originalContent = btn.innerHTML;
+          btn.innerHTML = 'VERIFYING...';
+          
+          try {
+            const response = await fetch('/api/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id, pass })
+            });
+
+            if (response.ok) {
+              // Store passcode in session for subsequent authorized requests
+              sessionStorage.setItem('adminApiKey', pass);
+              setTimeout(() => {
+                window.location.href = 'dashboard.html';
+              }, 400);
+            } else {
+              alert('Access Denied: Invalid Credentials');
+              btn.innerHTML = originalContent;
+            }
+          } catch (error) {
+            console.error('Login error:', error);
+            alert('Connection failed. Make sure the backend server is running.');
+            btn.innerHTML = originalContent;
           }
         });
       }

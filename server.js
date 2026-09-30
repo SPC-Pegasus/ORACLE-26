@@ -52,6 +52,16 @@ const connectDB = async () => {
 
 const router = express.Router();
 
+// POST /login Endpoint (Public - Admin Verification)
+router.post('/login', (req, res) => {
+  const { id, pass } = req.body;
+  const validId = process.env.ADMIN_ID || 'pegasus';
+  if (id === validId && pass && pass === process.env.ADMIN_API_KEY) {
+    return res.status(200).json({ success: true, message: 'Authorized' });
+  }
+  return res.status(401).json({ error: 'Access Denied: Invalid Credentials' });
+});
+
 // GET /scores Endpoint (Public)
 router.get('/scores', async (req, res) => {
   await connectDB();
