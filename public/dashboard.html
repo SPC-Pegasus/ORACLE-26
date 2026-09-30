@@ -122,25 +122,31 @@
     <div class="modal-content">
       <button class="modal-close" onclick="closeModals()">&times;</button>
       <h2 class="module-title">Download Registrations</h2>
-      <p class="admin-desc" style="text-align: left; margin-bottom: 1.5rem;">Select the event to generate and download its registration list.</p>
+      <p class="admin-desc" style="text-align: left; margin-bottom: 1.5rem;">Select an individual event or choose the 12-Event Summary to download total participant statistics.</p>
       
       <form id="downloadRegForm">
         <div class="form-group">
           <label for="downloadRegEventSelect">Select Event</label>
           <select id="downloadRegEventSelect" class="form-control" required>
-            <option value="" disabled selected>Choose an event...</option>
-            <option value="NFS">NFS</option>
-            <option value="Treasure Hunt">Treasure Hunt</option>
-            <option value="Free Fire">Free Fire</option>
-            <option value="BGMI">BGMI</option>
-            <option value="IT Manager">IT Manager</option>
-            <option value="IT Quiz">IT Quiz</option>
-            <option value="Web AI">Web AI</option>
-            <option value="Poster Making">Poster Making</option>
-            <option value="Group Dance">Group Dance</option>
-            <option value="Group Singing">Group Singing</option>
-            <option value="Fashion Show">Fashion Show</option>
-            <option value="Cosplay">Cosplay</option>
+            <option value="" disabled selected>Choose an event or summary report...</option>
+            <optgroup label="Grand Reports (All 12 Events)">
+              <option value="All Events Summary">📊 All 12 Events - Total Participant Summary</option>
+              <option value="All Events Master List">📋 All 12 Events - Complete Master Ledger</option>
+            </optgroup>
+            <optgroup label="Individual Events">
+              <option value="NFS">NFS</option>
+              <option value="Treasure Hunt">Treasure Hunt</option>
+              <option value="Free Fire">Free Fire</option>
+              <option value="BGMI">BGMI</option>
+              <option value="IT Manager">IT Manager</option>
+              <option value="IT Quiz">IT Quiz</option>
+              <option value="Web AI">Web AI</option>
+              <option value="Poster Making">Poster Making</option>
+              <option value="Group Dance">Group Dance</option>
+              <option value="Group Singing">Group Singing</option>
+              <option value="Fashion Show">Fashion Show</option>
+              <option value="Cosplay">Cosplay</option>
+            </optgroup>
           </select>
         </div>
         
@@ -373,7 +379,10 @@
 
         try {
           const selectedEvent = document.getElementById('downloadRegEventSelect').value;
-          const response = await fetch(`/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`, {
+          const isAllEvents = (selectedEvent === 'All Events Summary' || selectedEvent === 'All Events Master List');
+          const fetchUrl = isAllEvents ? '/api/registrations' : `/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`;
+
+          const response = await fetch(fetchUrl, {
             cache: 'no-store',
             headers: {
               'x-api-key': sessionStorage.getItem('adminApiKey') || ''
@@ -385,24 +394,188 @@
           if (!response.ok) throw new Error('Failed to fetch from backend');
           
           const result = await response.json();
-          const registrations = result.data;
+          const registrations = result.data || [];
+
+          function parseNames(str) {
+            if (!str || typeof str !== 'string') return [];
+            return str.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean);
+          }
 
           const { jsPDF } = window.jspdf;
-          const doc = new jsPDF({ orientation: 'portrait' });
-          
-          doc.setFontSize(18);
-          doc.text(`${selectedEvent}: Registration List`, 14, 22);
-          doc.setFontSize(11);
-          doc.setTextColor(100);
-          doc.text(`Generated on: ${new Date().toLocaleString()} | Total Teams: ${registrations.length}`, 14, 30);
 
-          let tableColumn = ["#", "Team Name", "Participants"];
-          if (selectedEvent === 'Cosplay' || selectedEvent === 'Fashion Show') {
-            tableColumn.push("Theme");
+          // ==========================================
+          // CASE 1: ALL 12 EVENTS PARTICIPANT SUMMARY
+          // ==========================================
+          if (selectedEvent === 'All Events Summary') {
+            const doc = new jsPDF({ orientation: 'portrait' });
+            
+            const all12Events = [
+              { name: 'NFS', category: 'Solo' },
+              { name: 'Treasure Hunt', category: 'Group' },
+              { name: 'Free Fire', category: 'Squad' },
+              { name: 'BGMI', category: 'Squad' },
+              { name: 'IT Manager', category: 'Solo' },
+              { name: 'IT Quiz', category: 'Duo' },
+              { name: 'Web AI', category: 'Duo' },
+              { name: 'Poster Making', category: 'Solo' },
+              { name: 'Group Dance', category: 'Group' },
+              { name: 'Group Singing', category: 'Group' },
+              { name: 'Fashion Show', category: 'Group' },
+              { name: 'Cosplay', category: 'Group' }
+            ];
+
+            let grandTotalTeams = 0;
+            let grandTotalParticipants = 0;
+            const uniqueNamesSet = new Set();
+            const teamParticipation = {};
+
+            const eventSummaryRows = all12Events.map((evt, idx) => {
+              const eventRegs = registrations.filter(r => r.eventName === evt.name);
+              let eventParticipantsCount = 0;
+
+              eventRegs.forEach(reg => {
+                const names = parseNames(reg.participants);
+                eventParticipantsCount += names.length;
+                names.forEach(n => uniqueNamesSet.add(n.toLowerCase()));
+
+                if (!teamParticipation[reg.teamName]) {
+                  teamParticipation[reg.teamName] = { eventCount: 0, participantCount: 0 };
+                }
+                teamParticipation[reg.teamName].eventCount += 1;
+                teamParticipation[reg.teamName].participantCount += names.length;
+              });
+
+              grandTotalTeams += eventRegs.length;
+              grandTotalParticipants += eventParticipantsCount;
+              const avg = eventRegs.length > 0 ? (eventParticipantsCount / eventRegs.length).toFixed(1) : '0';
+
+              return [
+                idx + 1,
+                evt.name,
+                evt.category,
+                eventRegs.length,
+                eventParticipantsCount,
+                avg
+              ];
+            });
+
+            // Report Header
+            doc.setFontSize(22);
+            doc.setTextColor(30, 41, 59);
+            doc.text("THE ORACLE '26", 14, 18);
+            
+            doc.setFontSize(13);
+            doc.setTextColor(51, 65, 85);
+            doc.text("All 12 Events: Total Participant Count & Registration Summary", 14, 26);
+
+            doc.setFontSize(9);
+            doc.setTextColor(100, 116, 139);
+            doc.text(`Generated: ${new Date().toLocaleString()}  |  Total Events: 12  |  Registrations: ${grandTotalTeams}  |  Grand Total Participants: ${grandTotalParticipants}`, 14, 33);
+
+            // Table 1: Event-by-Event Breakdown
+            doc.autoTable({
+              head: [["#", "Event Name", "Category", "Registered Teams", "Total Participants", "Avg / Team"]],
+              body: eventSummaryRows,
+              foot: [["", "GRAND TOTAL", "All 12 Events", grandTotalTeams, grandTotalParticipants, (grandTotalParticipants / (grandTotalTeams || 1)).toFixed(1)]],
+              startY: 38,
+              theme: 'grid',
+              styles: { fontSize: 9.5, cellPadding: 3.5 },
+              headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
+              footStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
+              columnStyles: {
+                0: { cellWidth: 10, halign: 'center' },
+                3: { halign: 'center' },
+                4: { halign: 'center', fontStyle: 'bold' },
+                5: { halign: 'center' }
+              }
+            });
+
+            // Table 2: Team-Wise Participation Breakdown
+            const teamRows = Object.keys(teamParticipation).sort().map((tName, i) => [
+              i + 1,
+              tName,
+              teamParticipation[tName].eventCount,
+              teamParticipation[tName].participantCount
+            ]);
+
+            doc.autoTable({
+              head: [["#", "Team Name", "Events Entered (of 12)", "Total Participants Fielded"]],
+              body: teamRows,
+              foot: [["", "TOTAL", `${teamRows.length} Teams`, grandTotalParticipants]],
+              startY: doc.lastAutoTable.finalY + 12,
+              theme: 'grid',
+              styles: { fontSize: 9.5, cellPadding: 3.5 },
+              headStyles: { fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold' },
+              footStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
+              columnStyles: {
+                0: { cellWidth: 10, halign: 'center' },
+                2: { halign: 'center' },
+                3: { halign: 'center', fontStyle: 'bold' }
+              }
+            });
+
+            doc.save("oracle26_total_participants_summary.pdf");
+            return;
           }
+
+          // ==========================================
+          // CASE 2: ALL 12 EVENTS COMPLETE MASTER LEDGER
+          // ==========================================
+          if (selectedEvent === 'All Events Master List') {
+            const doc = new jsPDF({ orientation: 'portrait' });
+            
+            let masterRows = [];
+            let totalParticipants = 0;
+
+            registrations.forEach((reg, idx) => {
+              const names = parseNames(reg.participants);
+              totalParticipants += names.length;
+              masterRows.push([
+                idx + 1,
+                reg.eventName,
+                reg.teamName,
+                names.join(', '),
+                names.length
+              ]);
+            });
+
+            doc.setFontSize(18);
+            doc.text("THE ORACLE '26 - Master Registration Ledger", 14, 20);
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Generated: ${new Date().toLocaleString()} | Total Registrations: ${registrations.length} | Grand Total Participants: ${totalParticipants}`, 14, 28);
+
+            doc.autoTable({
+              head: [["#", "Event", "Team Name", "Participants", "Count"]],
+              body: masterRows,
+              foot: [["", "TOTAL", `${registrations.length} Registrations`, "", totalParticipants]],
+              startY: 35,
+              theme: 'grid',
+              styles: { fontSize: 8.5, cellPadding: 3 },
+              headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+              footStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
+              columnStyles: {
+                0: { cellWidth: 10, halign: 'center' },
+                1: { cellWidth: 28 },
+                2: { cellWidth: 32 },
+                4: { cellWidth: 18, halign: 'center', fontStyle: 'bold' }
+              }
+            });
+
+            doc.save("oracle26_all_events_master_registrations.pdf");
+            return;
+          }
+
+          // ==========================================
+          // CASE 3: INDIVIDUAL EVENT REGISTRATION LIST
+          // ==========================================
+          const doc = new jsPDF({ orientation: 'portrait' });
+          let totalEventParticipants = 0;
           let tableRows = [];
 
           registrations.forEach((reg, index) => {
+            const names = parseNames(reg.participants);
+            totalEventParticipants += names.length;
             const rowData = [
               index + 1,
               reg.teamName,
@@ -411,19 +584,44 @@
             if (selectedEvent === 'Cosplay' || selectedEvent === 'Fashion Show') {
               rowData.push(reg.theme || 'N/A');
             }
+            rowData.push(names.length);
             tableRows.push(rowData);
           });
+
+          let tableColumn = ["#", "Team Name", "Participants"];
+          if (selectedEvent === 'Cosplay' || selectedEvent === 'Fashion Show') {
+            tableColumn.push("Theme");
+          }
+          tableColumn.push("Count");
+
+          doc.setFontSize(18);
+          doc.text(`${selectedEvent}: Registration List`, 14, 22);
+          doc.setFontSize(11);
+          doc.setTextColor(100);
+          doc.text(`Generated: ${new Date().toLocaleString()} | Total Teams: ${registrations.length} | Total Participants: ${totalEventParticipants}`, 14, 30);
 
           doc.autoTable({
             head: [tableColumn],
             body: tableRows,
+            foot: [[
+              "",
+              "TOTAL",
+              `${registrations.length} Teams Registered`,
+              ...(selectedEvent === 'Cosplay' || selectedEvent === 'Fashion Show' ? [""] : []),
+              totalEventParticipants
+            ]],
             startY: 40,
             theme: 'grid',
             styles: { fontSize: 10, cellPadding: 4 },
-            headStyles: { fillColor: [41, 128, 185], textColor: 255 }
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+            footStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
+            columnStyles: {
+              0: { cellWidth: 10, halign: 'center' },
+              [tableColumn.length - 1]: { cellWidth: 18, halign: 'center', fontStyle: 'bold' }
+            }
           });
 
-          const filename = `${selectedEvent.replace(/\\s+/g, '_').toLowerCase()}_registrations.pdf`;
+          const filename = `${selectedEvent.replace(/\s+/g, '_').toLowerCase()}_registrations.pdf`;
           doc.save(filename);
           
         } catch (error) {
