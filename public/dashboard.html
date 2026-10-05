@@ -181,10 +181,6 @@
           <div class="stat-label">Unique Students (No Repetition)</div>
         </div>
         <div class="stat-box-mini">
-          <div class="stat-number" id="statTotalSlots">—</div>
-          <div class="stat-label">Total Event Enrollments</div>
-        </div>
-        <div class="stat-box-mini">
           <div class="stat-number" id="statMultiCount">—</div>
           <div class="stat-label">Multi-Event Students</div>
         </div>
@@ -750,7 +746,6 @@
 
     async function loadUniqueParticipants() {
       const uniqueCountEl = document.getElementById('statUniqueCount');
-      const totalSlotsEl = document.getElementById('statTotalSlots');
       const multiCountEl = document.getElementById('statMultiCount');
       const teamCountEl = document.getElementById('statTeamCount');
       const chipsContainer = document.getElementById('teamBreakdownContainer');
@@ -777,7 +772,6 @@
 
         // Update counter cards
         uniqueCountEl.innerText = cachedUniqueData.totalUnique;
-        totalSlotsEl.innerText = cachedUniqueData.totalEnrollments;
         multiCountEl.innerText = cachedUniqueData.multiEventCount;
         teamCountEl.innerText = Object.keys(cachedUniqueData.teamStats).length;
 
@@ -820,7 +814,6 @@
       // Section 1: Grand Headcount Metrics (Numbers Only)
       const summaryRows = [
         ["Total Distinct Students Fielded (Without Repetition)", `${uniqueData.totalUnique} Students`],
-        ["Total Event Registration Entries (Gross Slots)", `${uniqueData.totalEnrollments} Entries`],
         ["Single-Event Participants", `${uniqueData.totalUnique - uniqueData.multiEventCount} Students`],
         ["Multi-Event Participants (2+ events)", `${uniqueData.multiEventCount} Students`],
         ["Total Competing Teams", `${Object.keys(uniqueData.teamStats).length} Teams`]
@@ -842,32 +835,26 @@
       // Section 2: Team-Wise Distinct Headcount (Numbers Only)
       const teamRows = Object.keys(uniqueData.teamStats).sort().map((team, idx) => {
         const stats = uniqueData.teamStats[team];
-        const pct = uniqueData.totalUnique > 0 
-          ? ((stats.uniqueMembers.size / uniqueData.totalUnique) * 100).toFixed(1) + '%' 
-          : '0%';
         return [
           idx + 1,
           team,
-          stats.uniqueMembers.size,
-          stats.totalSlots,
-          pct
+          stats.uniqueMembers.size
         ];
       });
 
       doc.autoTable({
-        head: [["#", "Team Name", "Distinct Students (No Repetition)", "Total Event Entries", "% of Total Students"]],
+        head: [["#", "Team Name", "Distinct Students (Without Repetition)"]],
         body: teamRows,
-        foot: [["", "GRAND TOTAL", uniqueData.totalUnique, uniqueData.totalEnrollments, "100%"]],
+        foot: [["", "GRAND TOTAL", uniqueData.totalUnique]],
         startY: doc.lastAutoTable.finalY + 12,
         theme: 'grid',
-        styles: { fontSize: 10, cellPadding: 4 },
+        styles: { fontSize: 10.5, cellPadding: 4.5 },
         headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
         footStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
         columnStyles: {
-          0: { cellWidth: 12, halign: 'center' },
-          2: { halign: 'center', fontStyle: 'bold' },
-          3: { halign: 'center' },
-          4: { halign: 'center' }
+          0: { cellWidth: 15, halign: 'center' },
+          1: { cellWidth: 115 },
+          2: { halign: 'center', fontStyle: 'bold' }
         }
       });
 
