@@ -1,4 +1,4 @@
-# ORACLE '26 — Sector 00 / Protocol 3000
+# ORACLE '26 — 
 
 ![ORACLE '26 Preview](public/assets/oracle-preview.png)
 
