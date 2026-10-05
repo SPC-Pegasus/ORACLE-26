@@ -50,7 +50,7 @@
           <p class="admin-desc" style="margin-bottom: 0;">Select an operation to proceed.</p>
         </div>
 
-        <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); max-width: 800px; margin: 0 auto; margin-top: 4rem;">
+        <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 960px; margin: 0 auto; margin-top: 3.5rem;">
           
           <!-- Enter Data Button -->
           <div class="dashboard-module action-card" style="text-align: center;" onclick="window.location.href='enter-data.html'">
@@ -68,6 +68,12 @@
           <div class="dashboard-module action-card" style="text-align: center;" onclick="openRegModal()">
             <h2 class="module-title" style="border-bottom: none; margin-bottom: 0.5rem; font-size: 2.2rem;">DOWNLOAD REGISTRATIONS</h2>
             <p class="admin-desc" style="margin-bottom: 0;">Export official registration lists for each event.</p>
+          </div>
+
+          <!-- Unique Participants Button -->
+          <div class="dashboard-module action-card" style="text-align: center;" onclick="openUniqueModal()">
+            <h2 class="module-title" style="border-bottom: none; margin-bottom: 0.5rem; font-size: 2.2rem;">UNIQUE PARTICIPANTS</h2>
+            <p class="admin-desc" style="margin-bottom: 0;">Get number of students participated without repetition & export audit.</p>
           </div>
 
         </div>
@@ -132,6 +138,7 @@
             <optgroup label="Grand Reports (All 12 Events)">
               <option value="All Events Summary">📊 All 12 Events - Total Participant Summary</option>
               <option value="All Events Master List">📋 All 12 Events - Complete Master Ledger</option>
+              <option value="Unique Participants Summary">👥 All 12 Events - Unique Students (Without Repetition)</option>
             </optgroup>
             <optgroup label="Individual Events">
               <option value="NFS">NFS</option>
@@ -160,12 +167,94 @@
     </div>
   </div>
 
+  <!-- Modal for Unique Participants (Without Repetition) -->
+  <div id="uniqueModal" class="modal-overlay">
+    <div class="modal-content wide-modal">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <h2 class="module-title" style="margin-bottom: 0.3rem;">Unique Participants Headcount</h2>
+      <p class="admin-desc" style="text-align: left; margin-bottom: 1rem;">Total distinct students who participated across all 12 Oracle '26 events (without repetition).</p>
+      
+      <!-- Stats Counter Grid -->
+      <div class="stats-grid-mini">
+        <div class="stat-box-mini accent">
+          <div class="stat-number" id="statUniqueCount">—</div>
+          <div class="stat-label">Unique Students (No Repetition)</div>
+        </div>
+        <div class="stat-box-mini">
+          <div class="stat-number" id="statTotalSlots">—</div>
+          <div class="stat-label">Total Event Enrollments</div>
+        </div>
+        <div class="stat-box-mini">
+          <div class="stat-number" id="statMultiCount">—</div>
+          <div class="stat-label">Multi-Event Students</div>
+        </div>
+        <div class="stat-box-mini">
+          <div class="stat-number" id="statTeamCount">—</div>
+          <div class="stat-label">Teams Fielded</div>
+        </div>
+      </div>
+
+      <!-- Team-wise summary chips -->
+      <div style="margin-bottom: 0.5rem;">
+        <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; display: block; margin-bottom: 0.4rem;">Team Breakdown (Distinct Students)</label>
+        <div id="teamBreakdownContainer" class="team-chips-container">
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Loading team data...</span>
+        </div>
+      </div>
+
+      <!-- Search & Filter -->
+      <div class="form-group" style="margin-bottom: 0.8rem;">
+        <input type="text" id="uniqueSearchInput" class="form-control" placeholder="Search participant name, team, or event..." style="padding: 0.6rem 1rem; font-size: 0.88rem;" oninput="filterUniqueTable()">
+      </div>
+
+      <!-- Scrollable table -->
+      <div class="participants-table-wrapper">
+        <table class="participants-table">
+          <thead>
+            <tr>
+              <th style="width: 40px; text-align: center;">#</th>
+              <th>Student Name</th>
+              <th>Team Name</th>
+              <th>Events Participated</th>
+              <th style="width: 60px; text-align: center;">Events</th>
+            </tr>
+          </thead>
+          <tbody id="uniqueTableBody">
+            <tr>
+              <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Loading unique participants...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="modal-actions-row">
+        <button type="button" class="btn-power-smash secondary" style="flex: 1; margin-top: 0;" onclick="downloadUniqueParticipantsPDF()">
+          <div class="btn-power-smash-overlay1"></div>
+          <div class="btn-power-smash-content" style="padding: 0.7rem 1.2rem; font-size: 0.85rem;">
+            DOWNLOAD PDF REPORT
+          </div>
+        </button>
+        <button type="button" class="btn-secondary-action" onclick="exportUniqueCSV()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          EXPORT CSV
+        </button>
+        <button type="button" class="btn-secondary-action" onclick="copyUniqueNames()" id="copyNamesBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          COPY NAMES
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script src="js/app.js"></script>
   <script>
     const downloadModal = document.getElementById('downloadModal');
     const downloadRegModal = document.getElementById('downloadRegModal');
+    const uniqueModal = document.getElementById('uniqueModal');
 
     function openDownloadModal() {
       downloadModal.classList.add('active');
@@ -175,9 +264,15 @@
       downloadRegModal.classList.add('active');
     }
 
+    function openUniqueModal() {
+      uniqueModal.classList.add('active');
+      loadUniqueParticipants();
+    }
+
     function closeModals() {
       downloadModal.classList.remove('active');
       downloadRegModal.classList.remove('active');
+      uniqueModal.classList.remove('active');
     }
 
     // Close on click outside
@@ -187,6 +282,9 @@
       }
       if (event.target == downloadRegModal) {
         downloadRegModal.classList.remove('active');
+      }
+      if (event.target == uniqueModal) {
+        uniqueModal.classList.remove('active');
       }
     }
 
@@ -379,7 +477,7 @@
 
         try {
           const selectedEvent = document.getElementById('downloadRegEventSelect').value;
-          const isAllEvents = (selectedEvent === 'All Events Summary' || selectedEvent === 'All Events Master List');
+          const isAllEvents = (selectedEvent === 'All Events Summary' || selectedEvent === 'All Events Master List' || selectedEvent === 'Unique Participants Summary');
           const fetchUrl = isAllEvents ? '/api/registrations' : `/api/registrations?eventName=${encodeURIComponent(selectedEvent)}`;
 
           const response = await fetch(fetchUrl, {
@@ -402,6 +500,15 @@
           }
 
           const { jsPDF } = window.jspdf;
+
+          // ==========================================
+          // CASE 0: UNIQUE PARTICIPANTS (WITHOUT REPETITION)
+          // ==========================================
+          if (selectedEvent === 'Unique Participants Summary') {
+            const uniqueData = extractUniqueParticipants(registrations);
+            generateUniqueParticipantsPDF(uniqueData);
+            return;
+          }
 
           // ==========================================
           // CASE 1: ALL 12 EVENTS PARTICIPANT SUMMARY
@@ -461,7 +568,7 @@
 
             doc.setFontSize(9);
             doc.setTextColor(100, 116, 139);
-            doc.text(`Generated: ${new Date().toLocaleString()}  |  Total Events: 12  |  Registrations: ${grandTotalTeams}  |  Grand Total Participants: ${grandTotalParticipants}`, 14, 33);
+            doc.text(`Generated: ${new Date().toLocaleString()}  |  Total Events: 12  |  Registrations: ${grandTotalTeams}  |  Total Participants: ${grandTotalParticipants}  |  Unique Students: ${uniqueNamesSet.size}`, 14, 33);
 
             // Table 1: Event-by-Event Breakdown
             doc.autoTable({
@@ -480,7 +587,10 @@
               }
             });
 
-
+            doc.setFontSize(10);
+            doc.setTextColor(30, 41, 59);
+            doc.setFont(undefined, 'bold');
+            doc.text(`Total Distinct Students Fielded (Without Repetition): ${uniqueNamesSet.size}`, 14, doc.lastAutoTable.finalY + 10);
 
             doc.save("oracle26_total_participants_summary.pdf");
             return;
@@ -602,6 +712,310 @@
       });
 
     });
+
+    // ==========================================
+    // UNIQUE PARTICIPANTS MODULE LOGIC
+    // ==========================================
+    let cachedUniqueData = null;
+
+    function extractUniqueParticipants(registrations) {
+      const studentMap = new Map();
+      let totalEnrollments = 0;
+      const teamStats = {};
+
+      function cleanName(n) {
+        return n.trim().replace(/\s+/g, ' ');
+      }
+
+      function getNormalizedKey(n) {
+        return n.toLowerCase().replace(/[^a-z0-9]/g, '');
+      }
+
+      registrations.forEach(reg => {
+        const rawParticipants = typeof reg.participants === 'string' ? reg.participants : String(reg.participants || '');
+        const names = rawParticipants.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean);
+
+        const team = reg.teamName || 'Unknown Team';
+        if (!teamStats[team]) {
+          teamStats[team] = { uniqueMembers: new Set(), totalSlots: 0 };
+        }
+
+        names.forEach(rawName => {
+          const clean = cleanName(rawName);
+          const key = getNormalizedKey(clean);
+          if (!key) return;
+
+          totalEnrollments++;
+          teamStats[team].totalSlots++;
+          teamStats[team].uniqueMembers.add(key);
+
+          if (!studentMap.has(key)) {
+            studentMap.set(key, {
+              name: clean,
+              teamName: team,
+              events: new Set([reg.eventName])
+            });
+          } else {
+            const student = studentMap.get(key);
+            student.events.add(reg.eventName);
+            if ((!student.teamName || student.teamName === 'Unknown Team') && team) {
+              student.teamName = team;
+            }
+          }
+        });
+      });
+
+      const uniqueList = Array.from(studentMap.values()).map(s => ({
+        name: s.name,
+        teamName: s.teamName,
+        events: Array.from(s.events),
+        eventCount: s.events.size
+      })).sort((a, b) => a.name.localeCompare(b.name));
+
+      const multiEventCount = uniqueList.filter(s => s.eventCount > 1).length;
+
+      return {
+        uniqueList,
+        totalUnique: uniqueList.length,
+        totalEnrollments,
+        multiEventCount,
+        teamStats
+      };
+    }
+
+    async function loadUniqueParticipants() {
+      const tableBody = document.getElementById('uniqueTableBody');
+      const uniqueCountEl = document.getElementById('statUniqueCount');
+      const totalSlotsEl = document.getElementById('statTotalSlots');
+      const multiCountEl = document.getElementById('statMultiCount');
+      const teamCountEl = document.getElementById('statTeamCount');
+      const chipsContainer = document.getElementById('teamBreakdownContainer');
+
+      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Loading unique participants data...</td></tr>`;
+
+      try {
+        const response = await fetch('/api/registrations', {
+          cache: 'no-store',
+          headers: {
+            'x-api-key': sessionStorage.getItem('adminApiKey') || ''
+          }
+        });
+
+        if (response.status === 403) {
+          alert('Access denied: Please log in again via admin.html.');
+          window.location.href = 'admin.html';
+          return;
+        }
+        if (!response.ok) throw new Error('Failed to fetch registrations');
+
+        const result = await response.json();
+        const registrations = result.data || [];
+
+        cachedUniqueData = extractUniqueParticipants(registrations);
+
+        // Update counter cards
+        uniqueCountEl.innerText = cachedUniqueData.totalUnique;
+        totalSlotsEl.innerText = cachedUniqueData.totalEnrollments;
+        multiCountEl.innerText = cachedUniqueData.multiEventCount;
+        teamCountEl.innerText = Object.keys(cachedUniqueData.teamStats).length;
+
+        // Render team breakdown chips
+        const teamEntries = Object.keys(cachedUniqueData.teamStats).sort();
+        if (teamEntries.length === 0) {
+          chipsContainer.innerHTML = `<span style="font-size: 0.8rem; color: var(--text-muted);">No teams registered yet.</span>`;
+        } else {
+          chipsContainer.innerHTML = teamEntries.map(t => `
+            <div class="team-chip">
+              <span>${t}</span>
+              <span class="team-chip-count">${cachedUniqueData.teamStats[t].uniqueMembers.size}</span>
+            </div>
+          `).join('');
+        }
+
+        renderUniqueTable(cachedUniqueData.uniqueList);
+
+      } catch (err) {
+        console.error('Error loading unique participants:', err);
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #ef4444; padding: 1.5rem;">Error loading participants: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderUniqueTable(list) {
+      const tableBody = document.getElementById('uniqueTableBody');
+      if (!list || list.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No participants found matching criteria.</td></tr>`;
+        return;
+      }
+
+      tableBody.innerHTML = list.map((st, idx) => `
+        <tr>
+          <td style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">${idx + 1}</td>
+          <td style="font-weight: 600; color: #f8fafc;">${st.name}</td>
+          <td style="color: #94a3b8;">${st.teamName}</td>
+          <td>${st.events.map(ev => `<span class="badge-event">${ev}</span>`).join('')}</td>
+          <td style="text-align: center; font-weight: 700; color: #38bdf8;">${st.eventCount}</td>
+        </tr>
+      `).join('');
+    }
+
+    function filterUniqueTable() {
+      if (!cachedUniqueData) return;
+      const query = (document.getElementById('uniqueSearchInput').value || '').trim().toLowerCase();
+      if (!query) {
+        renderUniqueTable(cachedUniqueData.uniqueList);
+        return;
+      }
+
+      const filtered = cachedUniqueData.uniqueList.filter(st => {
+        return st.name.toLowerCase().includes(query) ||
+               st.teamName.toLowerCase().includes(query) ||
+               st.events.some(ev => ev.toLowerCase().includes(query));
+      });
+
+      renderUniqueTable(filtered);
+    }
+
+    function generateUniqueParticipantsPDF(uniqueData) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait' });
+      
+      // Main Header
+      doc.setFontSize(22);
+      doc.setTextColor(30, 41, 59);
+      doc.text("THE ORACLE '26", 14, 18);
+      
+      doc.setFontSize(13);
+      doc.setTextColor(51, 65, 85);
+      doc.text("Official Unique Participant Audit Report (Without Repetition)", 14, 26);
+
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Generated: ${new Date().toLocaleString()}  |  Sector 00 / Protocol 3000  |  De-duplicated Headcount`, 14, 32);
+
+      // Summary Metrics Table
+      const summaryRows = [
+        ["Total Distinct Students Fielded (Without Repetition)", `${uniqueData.totalUnique} Students`],
+        ["Total Event Registration Slots (Gross Enrollments)", `${uniqueData.totalEnrollments} Entries`],
+        ["Multi-Event Students (Participating in 2+ events)", `${uniqueData.multiEventCount} Students`],
+        ["Single-Event Students", `${uniqueData.totalUnique - uniqueData.multiEventCount} Students`],
+        ["Participating Teams", `${Object.keys(uniqueData.teamStats).length} Teams`]
+      ];
+
+      doc.autoTable({
+        head: [["Headcount Audit Metric", "Statistic"]],
+        body: summaryRows,
+        startY: 37,
+        theme: 'grid',
+        styles: { fontSize: 9.5, cellPadding: 3.5 },
+        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
+        columnStyles: {
+          0: { cellWidth: 120, fontStyle: 'bold' },
+          1: { halign: 'center', fontStyle: 'bold' }
+        }
+      });
+
+      // Team Breakdown Table
+      const teamRows = Object.keys(uniqueData.teamStats).sort().map((team, idx) => {
+        const stats = uniqueData.teamStats[team];
+        return [
+          idx + 1,
+          team,
+          stats.uniqueMembers.size,
+          stats.totalSlots
+        ];
+      });
+
+      doc.autoTable({
+        head: [["#", "Team Name", "Distinct Students (No Repetition)", "Total Event Slots"]],
+        body: teamRows,
+        foot: [["", "GRAND TOTAL", uniqueData.totalUnique, uniqueData.totalEnrollments]],
+        startY: doc.lastAutoTable.finalY + 8,
+        theme: 'grid',
+        styles: { fontSize: 9, cellPadding: 3 },
+        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
+        footStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
+        columnStyles: {
+          0: { cellWidth: 10, halign: 'center' },
+          2: { halign: 'center', fontStyle: 'bold' },
+          3: { halign: 'center' }
+        }
+      });
+
+      // Master Alphabetical Roster
+      const rosterRows = uniqueData.uniqueList.map((st, idx) => [
+        idx + 1,
+        st.name,
+        st.teamName,
+        st.events.join(', '),
+        st.eventCount
+      ]);
+
+      doc.autoTable({
+        head: [["#", "Student Name", "Team Name", "Events Registered", "Count"]],
+        body: rosterRows,
+        startY: doc.lastAutoTable.finalY + 8,
+        theme: 'grid',
+        styles: { fontSize: 8.5, cellPadding: 2.8 },
+        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
+        columnStyles: {
+          0: { cellWidth: 10, halign: 'center' },
+          1: { cellWidth: 45, fontStyle: 'bold' },
+          2: { cellWidth: 40 },
+          4: { cellWidth: 15, halign: 'center', fontStyle: 'bold' }
+        }
+      });
+
+      doc.save("oracle26_unique_participants_no_repetition.pdf");
+    }
+
+    function downloadUniqueParticipantsPDF() {
+      if (!cachedUniqueData || cachedUniqueData.uniqueList.length === 0) {
+        alert('No participant data available to export.');
+        return;
+      }
+      generateUniqueParticipantsPDF(cachedUniqueData);
+    }
+
+    function exportUniqueCSV() {
+      if (!cachedUniqueData || cachedUniqueData.uniqueList.length === 0) {
+        alert('No participant data available to export.');
+        return;
+      }
+      let csv = "Index,Student Name,Team Name,Events Registered,Total Events\n";
+      cachedUniqueData.uniqueList.forEach((st, idx) => {
+        const escapedName = `"${st.name.replace(/"/g, '""')}"`;
+        const escapedTeam = `"${st.teamName.replace(/"/g, '""')}"`;
+        const escapedEvents = `"${st.events.join('; ').replace(/"/g, '""')}"`;
+        csv += `${idx + 1},${escapedName},${escapedTeam},${escapedEvents},${st.eventCount}\n`;
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", "oracle26_unique_students_no_repetition.csv");
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function copyUniqueNames() {
+      if (!cachedUniqueData || cachedUniqueData.uniqueList.length === 0) {
+        alert('No participant data available to copy.');
+        return;
+      }
+      const namesText = cachedUniqueData.uniqueList.map(s => s.name).join('\n');
+      navigator.clipboard.writeText(namesText).then(() => {
+        const btn = document.getElementById('copyNamesBtn');
+        const origText = btn.innerHTML;
+        btn.innerHTML = `✓ COPIED!`;
+        setTimeout(() => { btn.innerHTML = origText; }, 2000);
+      }).catch(err => {
+        console.error('Clipboard copy failed:', err);
+        alert('Failed to copy names to clipboard.');
+      });
+    }
   </script>
 </body>
 

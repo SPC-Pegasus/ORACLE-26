@@ -119,8 +119,8 @@ router.post('/registrations', async (req, res) => {
   if (!eventName || typeof eventName !== 'string' || eventName.length > 100) {
     return res.status(400).json({ error: 'Invalid eventName' });
   }
-  if (!participants || !Array.isArray(participants) || participants.length > 50) {
-    return res.status(400).json({ error: 'Invalid participants array' });
+  if (!participants || (typeof participants !== 'string' && !Array.isArray(participants))) {
+    return res.status(400).json({ error: 'Invalid participants format' });
   }
 
   try {
@@ -130,6 +130,67 @@ router.post('/registrations', async (req, res) => {
   } catch (error) {
     console.error('Error saving registration:', error);
     res.status(500).json({ error: 'Failed to register' });
+  }
+});
+
+// GET /registrations/unique Endpoint (Protected)
+router.get('/registrations/unique', verifyAdmin, async (req, res) => {
+  await connectDB();
+  try {
+    const registrations = await Registration.find().sort({ createdAt: -1 });
+    const studentMap = new Map();
+    let totalEnrollments = 0;
+    const teamStats = {};
+
+    registrations.forEach(reg => {
+      const raw = typeof reg.participants === 'string' ? reg.participants : String(reg.participants || '');
+      const names = raw.split(/[\r\n,;]+/).map(s => s.trim()).filter(Boolean);
+      const team = reg.teamName || 'Unknown Team';
+
+      if (!teamStats[team]) {
+        teamStats[team] = { uniqueCount: 0, totalSlots: 0, members: new Set() };
+      }
+
+      names.forEach(rawName => {
+        const clean = rawName.trim().replace(/\s+/g, ' ');
+        const key = clean.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (!key) return;
+
+        totalEnrollments++;
+        teamStats[team].totalSlots++;
+        teamStats[team].members.add(key);
+
+        if (!studentMap.has(key)) {
+          studentMap.set(key, {
+            name: clean,
+            teamName: team,
+            events: [reg.eventName]
+          });
+        } else {
+          const item = studentMap.get(key);
+          if (!item.events.includes(reg.eventName)) {
+            item.events.push(reg.eventName);
+          }
+        }
+      });
+    });
+
+    Object.keys(teamStats).forEach(t => {
+      teamStats[t].uniqueCount = teamStats[t].members.size;
+      delete teamStats[t].members;
+    });
+
+    const uniqueList = Array.from(studentMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+
+    res.status(200).json({
+      totalUnique: uniqueList.length,
+      totalEnrollments,
+      teamStats,
+      data: uniqueList
+    });
+  } catch (error) {
+    console.error('Error fetching unique registrations:', error);
+    res.status(500).json({ error: 'Failed to fetch unique registrations' });
   }
 });
 
