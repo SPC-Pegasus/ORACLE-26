@@ -169,10 +169,10 @@
 
   <!-- Modal for Unique Participants (Without Repetition) -->
   <div id="uniqueModal" class="modal-overlay">
-    <div class="modal-content wide-modal">
+    <div class="modal-content" style="max-width: 540px;">
       <button class="modal-close" onclick="closeModals()">&times;</button>
       <h2 class="module-title" style="margin-bottom: 0.3rem;">Unique Participants Headcount</h2>
-      <p class="admin-desc" style="text-align: left; margin-bottom: 1rem;">Total distinct students who participated across all 12 Oracle '26 events (without repetition).</p>
+      <p class="admin-desc" style="text-align: left; margin-bottom: 1.5rem;">Total distinct students who participated across all 12 Oracle '26 events (without repetition).</p>
       
       <!-- Stats Counter Grid -->
       <div class="stats-grid-mini">
@@ -195,55 +195,20 @@
       </div>
 
       <!-- Team-wise summary chips -->
-      <div style="margin-bottom: 0.5rem;">
-        <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; display: block; margin-bottom: 0.4rem;">Team Breakdown (Distinct Students)</label>
+      <div style="margin-bottom: 1.5rem;">
+        <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; display: block; margin-bottom: 0.5rem;">Team Breakdown (Distinct Students)</label>
         <div id="teamBreakdownContainer" class="team-chips-container">
           <span style="font-size: 0.8rem; color: var(--text-muted);">Loading team data...</span>
         </div>
       </div>
 
-      <!-- Search & Filter -->
-      <div class="form-group" style="margin-bottom: 0.8rem;">
-        <input type="text" id="uniqueSearchInput" class="form-control" placeholder="Search participant name, team, or event..." style="padding: 0.6rem 1rem; font-size: 0.88rem;" oninput="filterUniqueTable()">
-      </div>
-
-      <!-- Scrollable table -->
-      <div class="participants-table-wrapper">
-        <table class="participants-table">
-          <thead>
-            <tr>
-              <th style="width: 40px; text-align: center;">#</th>
-              <th>Student Name</th>
-              <th>Team Name</th>
-              <th>Events Participated</th>
-              <th style="width: 60px; text-align: center;">Events</th>
-            </tr>
-          </thead>
-          <tbody id="uniqueTableBody">
-            <tr>
-              <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Loading unique participants...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="modal-actions-row">
-        <button type="button" class="btn-power-smash secondary" style="flex: 1; margin-top: 0;" onclick="downloadUniqueParticipantsPDF()">
-          <div class="btn-power-smash-overlay1"></div>
-          <div class="btn-power-smash-content" style="padding: 0.7rem 1.2rem; font-size: 0.85rem;">
-            DOWNLOAD PDF REPORT
-          </div>
-        </button>
-        <button type="button" class="btn-secondary-action" onclick="exportUniqueCSV()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          EXPORT CSV
-        </button>
-        <button type="button" class="btn-secondary-action" onclick="copyUniqueNames()" id="copyNamesBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          COPY NAMES
-        </button>
-      </div>
+      <!-- Action Button -->
+      <button type="button" class="btn-power-smash secondary full-width" onclick="downloadUniqueParticipantsPDF()">
+        <div class="btn-power-smash-overlay1"></div>
+        <div class="btn-power-smash-content">
+          DOWNLOAD 1-PAGE SUMMARY (PDF)
+        </div>
+      </button>
 
     </div>
   </div>
@@ -784,14 +749,11 @@
     }
 
     async function loadUniqueParticipants() {
-      const tableBody = document.getElementById('uniqueTableBody');
       const uniqueCountEl = document.getElementById('statUniqueCount');
       const totalSlotsEl = document.getElementById('statTotalSlots');
       const multiCountEl = document.getElementById('statMultiCount');
       const teamCountEl = document.getElementById('statTeamCount');
       const chipsContainer = document.getElementById('teamBreakdownContainer');
-
-      tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Loading unique participants data...</td></tr>`;
 
       try {
         const response = await fetch('/api/registrations', {
@@ -832,47 +794,10 @@
           `).join('');
         }
 
-        renderUniqueTable(cachedUniqueData.uniqueList);
-
       } catch (err) {
         console.error('Error loading unique participants:', err);
-        tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #ef4444; padding: 1.5rem;">Error loading participants: ${err.message}</td></tr>`;
+        chipsContainer.innerHTML = `<span style="font-size: 0.8rem; color: #ef4444;">Error: ${err.message}</span>`;
       }
-    }
-
-    function renderUniqueTable(list) {
-      const tableBody = document.getElementById('uniqueTableBody');
-      if (!list || list.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No participants found matching criteria.</td></tr>`;
-        return;
-      }
-
-      tableBody.innerHTML = list.map((st, idx) => `
-        <tr>
-          <td style="text-align: center; color: var(--text-muted); font-size: 0.8rem;">${idx + 1}</td>
-          <td style="font-weight: 600; color: #f8fafc;">${st.name}</td>
-          <td style="color: #94a3b8;">${st.teamName}</td>
-          <td>${st.events.map(ev => `<span class="badge-event">${ev}</span>`).join('')}</td>
-          <td style="text-align: center; font-weight: 700; color: #38bdf8;">${st.eventCount}</td>
-        </tr>
-      `).join('');
-    }
-
-    function filterUniqueTable() {
-      if (!cachedUniqueData) return;
-      const query = (document.getElementById('uniqueSearchInput').value || '').trim().toLowerCase();
-      if (!query) {
-        renderUniqueTable(cachedUniqueData.uniqueList);
-        return;
-      }
-
-      const filtered = cachedUniqueData.uniqueList.filter(st => {
-        return st.name.toLowerCase().includes(query) ||
-               st.teamName.toLowerCase().includes(query) ||
-               st.events.some(ev => ev.toLowerCase().includes(query));
-      });
-
-      renderUniqueTable(filtered);
     }
 
     function generateUniqueParticipantsPDF(uniqueData) {
@@ -882,139 +807,84 @@
       // Main Header
       doc.setFontSize(22);
       doc.setTextColor(30, 41, 59);
-      doc.text("THE ORACLE '26", 14, 18);
+      doc.text("THE ORACLE '26", 14, 20);
       
       doc.setFontSize(13);
       doc.setTextColor(51, 65, 85);
-      doc.text("Official Unique Participant Audit Report (Without Repetition)", 14, 26);
+      doc.text("Unique Participant Headcount Summary (Without Repetition)", 14, 29);
 
       doc.setFontSize(9);
       doc.setTextColor(100, 116, 139);
-      doc.text(`Generated: ${new Date().toLocaleString()}  |  Sector 00 / Protocol 3000  |  De-duplicated Headcount`, 14, 32);
+      doc.text(`Generated: ${new Date().toLocaleString()}  |  Single-Page Headcount Summary  |  Protocol 3000`, 14, 36);
 
-      // Summary Metrics Table
+      // Section 1: Grand Headcount Metrics (Numbers Only)
       const summaryRows = [
         ["Total Distinct Students Fielded (Without Repetition)", `${uniqueData.totalUnique} Students`],
-        ["Total Event Registration Slots (Gross Enrollments)", `${uniqueData.totalEnrollments} Entries`],
-        ["Multi-Event Students (Participating in 2+ events)", `${uniqueData.multiEventCount} Students`],
-        ["Single-Event Students", `${uniqueData.totalUnique - uniqueData.multiEventCount} Students`],
-        ["Participating Teams", `${Object.keys(uniqueData.teamStats).length} Teams`]
+        ["Total Event Registration Entries (Gross Slots)", `${uniqueData.totalEnrollments} Entries`],
+        ["Single-Event Participants", `${uniqueData.totalUnique - uniqueData.multiEventCount} Students`],
+        ["Multi-Event Participants (2+ events)", `${uniqueData.multiEventCount} Students`],
+        ["Total Competing Teams", `${Object.keys(uniqueData.teamStats).length} Teams`]
       ];
 
       doc.autoTable({
-        head: [["Headcount Audit Metric", "Statistic"]],
+        head: [["Headcount Audit Metric", "Count"]],
         body: summaryRows,
-        startY: 37,
+        startY: 42,
         theme: 'grid',
-        styles: { fontSize: 9.5, cellPadding: 3.5 },
+        styles: { fontSize: 10, cellPadding: 4.5 },
         headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
         columnStyles: {
-          0: { cellWidth: 120, fontStyle: 'bold' },
-          1: { halign: 'center', fontStyle: 'bold' }
+          0: { cellWidth: 135, fontStyle: 'bold' },
+          1: { halign: 'center', fontStyle: 'bold', textColor: [41, 128, 185] }
         }
       });
 
-      // Team Breakdown Table
+      // Section 2: Team-Wise Distinct Headcount (Numbers Only)
       const teamRows = Object.keys(uniqueData.teamStats).sort().map((team, idx) => {
         const stats = uniqueData.teamStats[team];
+        const pct = uniqueData.totalUnique > 0 
+          ? ((stats.uniqueMembers.size / uniqueData.totalUnique) * 100).toFixed(1) + '%' 
+          : '0%';
         return [
           idx + 1,
           team,
           stats.uniqueMembers.size,
-          stats.totalSlots
+          stats.totalSlots,
+          pct
         ];
       });
 
       doc.autoTable({
-        head: [["#", "Team Name", "Distinct Students (No Repetition)", "Total Event Slots"]],
+        head: [["#", "Team Name", "Distinct Students (No Repetition)", "Total Event Entries", "% of Total Students"]],
         body: teamRows,
-        foot: [["", "GRAND TOTAL", uniqueData.totalUnique, uniqueData.totalEnrollments]],
-        startY: doc.lastAutoTable.finalY + 8,
+        foot: [["", "GRAND TOTAL", uniqueData.totalUnique, uniqueData.totalEnrollments, "100%"]],
+        startY: doc.lastAutoTable.finalY + 12,
         theme: 'grid',
-        styles: { fontSize: 9, cellPadding: 3 },
+        styles: { fontSize: 10, cellPadding: 4 },
         headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
         footStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
         columnStyles: {
-          0: { cellWidth: 10, halign: 'center' },
+          0: { cellWidth: 12, halign: 'center' },
           2: { halign: 'center', fontStyle: 'bold' },
-          3: { halign: 'center' }
+          3: { halign: 'center' },
+          4: { halign: 'center' }
         }
       });
 
-      // Master Alphabetical Roster
-      const rosterRows = uniqueData.uniqueList.map((st, idx) => [
-        idx + 1,
-        st.name,
-        st.teamName,
-        st.events.join(', '),
-        st.eventCount
-      ]);
+      // Verification note
+      doc.setFontSize(9);
+      doc.setTextColor(120);
+      doc.text("Official verification summary confirming distinct participant headcount with duplicate entries eliminated.", 14, doc.lastAutoTable.finalY + 14);
 
-      doc.autoTable({
-        head: [["#", "Student Name", "Team Name", "Events Registered", "Count"]],
-        body: rosterRows,
-        startY: doc.lastAutoTable.finalY + 8,
-        theme: 'grid',
-        styles: { fontSize: 8.5, cellPadding: 2.8 },
-        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
-        columnStyles: {
-          0: { cellWidth: 10, halign: 'center' },
-          1: { cellWidth: 45, fontStyle: 'bold' },
-          2: { cellWidth: 40 },
-          4: { cellWidth: 15, halign: 'center', fontStyle: 'bold' }
-        }
-      });
-
-      doc.save("oracle26_unique_participants_no_repetition.pdf");
+      doc.save("oracle26_unique_participants_summary.pdf");
     }
 
     function downloadUniqueParticipantsPDF() {
-      if (!cachedUniqueData || cachedUniqueData.uniqueList.length === 0) {
+      if (!cachedUniqueData || cachedUniqueData.totalUnique === 0) {
         alert('No participant data available to export.');
         return;
       }
       generateUniqueParticipantsPDF(cachedUniqueData);
-    }
-
-    function exportUniqueCSV() {
-      if (!cachedUniqueData || cachedUniqueData.uniqueList.length === 0) {
-        alert('No participant data available to export.');
-        return;
-      }
-      let csv = "Index,Student Name,Team Name,Events Registered,Total Events\n";
-      cachedUniqueData.uniqueList.forEach((st, idx) => {
-        const escapedName = `"${st.name.replace(/"/g, '""')}"`;
-        const escapedTeam = `"${st.teamName.replace(/"/g, '""')}"`;
-        const escapedEvents = `"${st.events.join('; ').replace(/"/g, '""')}"`;
-        csv += `${idx + 1},${escapedName},${escapedTeam},${escapedEvents},${st.eventCount}\n`;
-      });
-      
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", "oracle26_unique_students_no_repetition.csv");
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    function copyUniqueNames() {
-      if (!cachedUniqueData || cachedUniqueData.uniqueList.length === 0) {
-        alert('No participant data available to copy.');
-        return;
-      }
-      const namesText = cachedUniqueData.uniqueList.map(s => s.name).join('\n');
-      navigator.clipboard.writeText(namesText).then(() => {
-        const btn = document.getElementById('copyNamesBtn');
-        const origText = btn.innerHTML;
-        btn.innerHTML = `✓ COPIED!`;
-        setTimeout(() => { btn.innerHTML = origText; }, 2000);
-      }).catch(err => {
-        console.error('Clipboard copy failed:', err);
-        alert('Failed to copy names to clipboard.');
-      });
     }
   </script>
 </body>
